@@ -1,0 +1,61 @@
+
+.ff_component {
+}
+.ff_description {
+	margin-bottom: 0.5em;
+}
+.ff_html textarea {
+	width: 99%;
+}
+.ff_combo .ff_field {
+	display: inline-block;
+	padding-right: 1em;
+}
+.ff_combo .ff_field .ff_title {
+	display: inline-block;
+	padding-right: 0.5em;
+}
+.ff_list .ff_item_number {
+	width: 30px;
+	padding: 8px 5px 5px 5px;
+	float:left;
+}
+.ff_list .ff_item_remove {
+	width: 100px;
+	padding: 8px 5px 5px 5px;
+	float: right;
+}
+.ff_even { 
+	background-color: #eef;
+}
+.ff_odd { 
+	background-color: #eee;
+}
+.ff_item_value {
+	padding: 5px;
+}
+.ff_item { 
+	border-bottom: solid 1px #999;
+	clear: both;
+}
+.ff_first { 
+	border-top: solid 1px #999;
+}
+
+.ff_section h2.ff_title {
+	border-radius: 10px;
+	box-shadow: 10px 10px 8px #ccc;
+	background-color: #eef;
+	border: solid 2px #99e;
+	padding: 0.2em;
+	margin-top: 2em;
+}
+.ff_section .ff_section .ff_component {
+	margin-left: 1em;
+	margin-right: 1em;
+}
+.ff_section .ff_section .ff_component .ff_component{
+	border: none;
+	margin: inherit;
+}
+
