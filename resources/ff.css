@@ -7,35 +7,50 @@
 .ff_html textarea {
 	width: 99%;
 }
+.ff_combo {
+	display: block;
+}
+.ff_list .ff_combo {
+	padding-left: 3em;
+	display: block;
+}
+.ff_list { 
+	margin-bottom: 1em;
+}
 .ff_combo .ff_field {
 	display: inline-block;
 	padding-right: 1em;
 }
 .ff_combo .ff_field .ff_title {
 	display: inline-block;
+}
+.ff_field .ff_title {
 	padding-right: 0.5em;
 }
 .ff_list .ff_item_number {
-	width: 30px;
 	padding: 8px 5px 5px 5px;
+	width: 3em;
 	float:left;
 }
 .ff_list .ff_item_remove {
-	width: 100px;
+	width: 40px;
 	padding: 8px 5px 5px 5px;
 	float: right;
 }
 .ff_even { 
 	background-color: #eef;
+	border-top: solid 1px #eef;
 }
 .ff_odd { 
 	background-color: #eee;
+	border-top: solid 2px #eee
 }
 .ff_item_value {
 	padding: 5px;
 }
 .ff_item { 
 	border-bottom: solid 1px #999;
+	margin: 0px;
 	clear: both;
 }
 .ff_first { 
@@ -49,6 +64,7 @@
 	border: solid 2px #99e;
 	padding: 0.2em;
 	margin-top: 2em;
+	margin-bottom: 1em;
 }
 .ff_section .ff_section .ff_component {
 	margin-left: 1em;
@@ -56,6 +72,35 @@
 }
 .ff_section .ff_section .ff_component .ff_component{
 	border: none;
-	margin: inherit;
+	margin: 0;
 }
-
+.ff_list ul li {
+	list-style: none;
+	padding: 0px;
+	margin: 0px;
+	min-height: 40px;
+}
+.ff_list ul {
+	list-style: none;
+	padding: 0px;
+	margin: 0px;
+}
+.ff_item_remove {
+	cursor: pointer;
+}
+.ff_item_add img {
+	vertical-align: sub;
+	width: 12px;
+}
+.ff_item_add {
+	cursor: pointer;
+	border-radius: 10px;
+	background-color: #eef;
+	border: solid 2px #99e;
+	padding: 2px 6px 2px 6px;
+	margin-top: 5px;
+	min-height: 14px;
+	display: inline-block;
+	font-size: 12px;
+	color: #669;
+}

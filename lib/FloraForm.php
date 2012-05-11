@@ -4,15 +4,15 @@
 class FloraForm extends FloraForm_Section
 {
 
-	function renderTitle( $context )
+	function renderTitle()
 	{
 		return "";
 	}
 
-	function render( $defaults=array(), $context=array() )
+	function render( $defaults=array() )
 	{
 		$h="<form method='POST'>";
-		$h.=parent::render($defaults, $context );
+		$h.=parent::render($defaults);
 		$h.="</form>";
 		return $h;
 	}
@@ -47,16 +47,15 @@ abstract class FloraForm_Component
 	{
 	}
 
-	function render( $defaults=array(), $context=array() )
+	function render( $defaults=array() )
 	{
 		return "render() should be subclassed";
 	}
 
-	function renderTitle($context=array())
+	function renderTitle()
 	{
-		$title = $this->id;
-		if( array_key_exists( "title",$this->options ) ) { $title = $this->options["title"]; }
-		return htmlspecialchars( $title );
+		if( !array_key_exists( "title",$this->options ) ) { return ""; }
+		return htmlspecialchars( $this->options["title"] );
 	}
 
 	function htmlOption( $opt_key )
@@ -72,42 +71,63 @@ abstract class FloraForm_Component
 	{
 		return array_key_exists( $opt_key, $this->options );
 	}	
-	function renderBlock( $parts, $context )
+	function renderBlock( $parts )
 	{
-		if( $this->options["layout"] == "section" )
-		{
-			$h.= "<div ".$this->renderIDAttr("container")." class='".$this->classes( $context )." ff_section'>";
-			if( array_key_exists( "title", $parts ) && $parts["title"] != "" )
-			{
-				$h.= "<h".$this->options["heading"]." class='ff_title'>";
-				$h.= $parts["title"];
-				$h.= "</h".$this->options["heading"].">";
-			}
+		# other layout options may go here later
+		if( $this->options["layout"] == "section" ) { return $this->renderBlockSection($parts ); }
+		if( $this->options["layout"] == "horizontal" ) { return $this->renderBlockHorizontal($parts ); }
 
-			if( $this->hasOption( "description" ) )
-			{
-				$h.= "<div class='ff_description' ".$this->renderIDAttr("description").">";
-				$h.= $this->option( "description" );
-				$h.= "</div>";
-			}
-				
-			$h.= $parts["content"];
-
-			$h.= "</div>";
-		}
-		else
+		$h = "";
+		$h.= "<span ".$this->renderIDAttr("container")." class='".$this->classes()."'>";
+		if( $parts["title"] != "" )
 		{	
-			$h.= "<div ".$this->renderIDAttr("container")." class='".$this->classes( $context )."'>";
-			$h.= "<div ".$this->renderIDAttr("title")." class='ff_title'>".$parts["title"]."</div>";
-			
-			$h.= $parts["content"];
+			$h.= "<span ".$this->renderIDAttr("title")." class='ff_title'>".$parts["title"].":</span>";
+		}
+		$h.= $parts["content"];
+		$h.= "</span>";
+
+		return $h;
+	}
+	function renderBlockHorizontal( $parts )
+	{
+		$h = "";
+		$h.= "<span ".$this->renderIDAttr("container")." style='display:block' class='".$this->classes()."'>";
+		if( $parts["title"] != "" )
+		{	
+			$h.= "<span ".$this->renderIDAttr("title")." class='ff_title' style='display: inline-block; text-align: right;>".$parts["title"].":</span>";
+		}
+		$h.= $parts["content"];
+		$h.= "</span>";
+
+		return $h;
+	}
+	
+	function renderBlockSection( $parts )
+	{
+		$h = "";
+		$h.= "<div ".$this->renderIDAttr("container")." class='".$this->classes()." ff_section'>";
+		if( array_key_exists( "title", $parts ) && $parts["title"] != "" )
+		{
+			$h.= "<h".$this->options["heading"]." class='ff_title'>";
+			$h.= $parts["title"];
+			$h.= "</h".$this->options["heading"].">";
+		}
+
+		if( $this->hasOption( "description" ) )
+		{
+			$h.= "<div class='ff_description' ".$this->renderIDAttr("description").">";
+			$h.= $this->option( "description" );
 			$h.= "</div>";
 		}
+				
+		$h.= $parts["content"];
+
+		$h.= "</div>";
 
 		return $h;
 	}
 
-	function classes( $context = array() )
+	function classes()
 	{
 		return "ff_component";
 	}
@@ -139,7 +159,7 @@ abstract class FloraForm_Component
 	{
 		if( $type == "TEXT" ) { $field = new FloraForm_Field_Text( $options ); }
 		elseif( $type == "HTML" ) { $field = new FloraForm_Field_HTML( $options ); }
-		elseif( $type == "SELECT" ) { $field = new FloraForm_Field_Select( $options ); }
+		elseif( $type == "CHOICE" ) { $field = new FloraForm_Field_Choice( $options ); }
 		elseif( $type == "LIST" ) { $field = new FloraForm_Field_List( $options ); }
 		elseif( $type == "COMBO" ) { $field = new FloraForm_Field_Combo( $options ); }
 		elseif( $type == "INFO" ) { $field = new FloraForm_Info( $options ); }
@@ -164,6 +184,10 @@ class FloraForm_Field_Combo extends FloraForm_Component
 	function add( $type, $options=array() )
 	{
 		$options["id-prefix"] = $this->fullId();
+		if( !array_key_exists( "resourcesURL", $options ) )
+		{
+			$options["resourcesURL"] = $this->options["resourcesURL"];
+		}
 		$field = $this->factory( $type, $options );
 		$this->fields []= $field;
 
@@ -187,16 +211,16 @@ class FloraForm_Field_Combo extends FloraForm_Component
 		}
 	}
 
-	function render( $defaults=array(), $context=array() )
+	function render( $defaults=array() )
 	{
 		$parts = array();
-		$parts["title"] = $this->renderTitle($context);
-		$parts["content"] = $this->renderInput( $defaults, $context );
+		$parts["title"] = $this->renderTitle();
+		$parts["content"] = $this->renderInput( $defaults );
 	
-		return $this->renderBlock( $parts, $context );
+		return $this->renderBlock( $parts );
 	}	
 	
-	function renderInput( $defaults=array(), $context=array() )
+	function renderInput( $defaults=array() )
 	{
 		$default = $defaults[$this->id];
 		$html = array();
@@ -215,9 +239,9 @@ class FloraForm_Field_Combo extends FloraForm_Component
 		}
 	}
 
-	function classes( $context = array() )
+	function classes()
 	{
-		return parent::classes( $context)." ff_combo";
+		return parent::classes()." ff_combo";
 	}
 }
 
@@ -244,6 +268,10 @@ class FloraForm_Section extends FloraForm_Component
 				$options["heading"] = 2;
 			}
 		}
+		if( !array_key_exists( "resourcesURL", $options ) )
+		{
+			$options["resourcesURL"] = $this->options["resourcesURL"];
+		}
 
 		$field = $this->factory( $type, $options );
 		$this->fields []= $field;
@@ -251,10 +279,10 @@ class FloraForm_Section extends FloraForm_Component
 		return $field;
 	}
 
-	function render( $defaults=array(), $context=array() )
+	function render( $defaults=array() )
 	{
 		$parts = array();
-		$parts["title"] = $this->renderTitle($context);
+		$parts["title"] = $this->renderTitle();
 		$html = array();
 		foreach( $this->fields as $field )
 		{
@@ -262,7 +290,7 @@ class FloraForm_Section extends FloraForm_Component
 		}
 		$parts["content"] = join( "", $html );
 	
-		return $this->renderBlock( $parts, $context );
+		return $this->renderBlock( $parts );
 	}	
 
 	function fromForm( &$values )
@@ -273,9 +301,9 @@ class FloraForm_Section extends FloraForm_Component
 		}
 	}
 
-	function classes( $context = array() )
+	function classes()
 	{
-		return parent::classes( $context)." ff_section";
+		return parent::classes()." ff_section";
 	}
 }
 
@@ -286,48 +314,48 @@ abstract class FloraForm_Field extends FloraForm_Component
 
 
 
-	function render( $defaults=array(), $context=array() )
+	function render( $defaults=array() )
 	{
 		$parts = array();
 		
 		$parts["title"] = "<label for='".$this->id."' ".$this->renderIDAttr("label").">"
-		       . $this->renderTitle($context)."</label>";
-		$parts["content"] = $this->renderInput($defaults, $context);
+		       . $this->renderTitle()."</label>";
+		$parts["content"] = $this->renderInput($defaults );
 
-		return $this->renderBlock( $parts, $context );
+		return $this->renderBlock( $parts );
 	}
 
-	function renderInput( $defaults=array(), $context=array() )
+	function renderInput( $defaults=array() )
 	{
 		return "<div>renderInput() must be subclassed!</div>";
 	}
 
-	function classes( $context = array() )
+	function classes()
 	{
-		return parent::classes( $context)." ff_field";
+		return parent::classes()." ff_field";
 	}
 }
 
 class FloraForm_Field_Text extends FloraForm_Field
 {
 
-	function renderInput( $defaults=array(), $context=array() )
+	function renderInput( $defaults=array() )
 	{
 		$default = $defaults[$this->id];
 		$html = "<input name='".$this->id."' ".$this->renderIDAttr()." class='' value='".htmlspecialchars($default)."' />";
 		return $html;
 	}
 	
-	function classes( $context = array() )
+	function classes()
 	{
-		return parent::classes( $context)." ff_text";
+		return parent::classes()." ff_text";
 	}
 }
 
 class FloraForm_Field_HTML extends FloraForm_Field
 {
 
-	function renderInput( $defaults=array(), $context=array() )
+	function renderInput( $defaults=array() )
 	{
 		$default = $defaults[$this->id];
 		$html = "<textarea name='".$this->id."' ".$this->renderIDAttr()." class='mceEditor'>".htmlspecialchars($default)."</textarea>";
@@ -335,18 +363,25 @@ class FloraForm_Field_HTML extends FloraForm_Field
 		return $html;
 	}
 	
-	function classes( $context = array() )
+	function classes()
 	{
-		return parent::classes( $context)." ff_html";
+		return parent::classes()." ff_html";
 	}
 }
 
-class FloraForm_Field_Select extends FloraForm_Field
+#TODO MultiChoice field (different to choice
+
+class FloraForm_Field_Choice extends FloraForm_Field
 {
 
-	#TODO multiple choices allowed
-	#TODO alternate views (radio, check)
-	function renderInput( $defaults=array(), $context=array() )
+	function renderInput( $defaults=array() )
+	{
+		if( $this->options['mode'] == 'pull-down' ) { return $this->renderInputPulldown( $defaults ); }
+		if( $this->options['mode'] == 'radio' ) { return $this->renderInputRadio( $defaults ); }
+		return $this->renderInputPulldown( $defaults ); 
+	}
+
+	function renderInputPulldown( $defaults )
 	{
 		$default = $defaults[$this->id];
 		$html = "<select name='".$this->id."' ".$this->renderIDAttr()." class=''>";
@@ -359,28 +394,47 @@ class FloraForm_Field_Select extends FloraForm_Field
 		$html.="</select>";
 		return $html;
 	}
-	
-	function classes( $context = array() )
+
+	function renderInputRadio( $defaults )
 	{
-		return parent::classes( $context)." ff_select";
+		$default = $defaults[$this->id];
+		#$html = "<select name='".$this->id."' ".$this->renderIDAttr()." class=''>";
+		foreach( $this->option( "choices" ) as $code=>$value )
+		{
+			$html .= "<label class='ff_radio_option'>";
+			$html .= "<input value='".htmlspecialchars( $code )."'";
+			$html .= " name='".$this->id."'";
+			$html .= " type='radio' ";
+			if( $default == $code ) { $html .= " checked='checked'"; }
+			$html .= " />";
+			$html .= $value;
+			$html .= "</label>";
+		}
+		#$html.="</select>";
+		return $html;
+	}
+	
+	function classes()
+	{
+		return parent::classes()." ff_select";
 	}
 }
 
 class FloraForm_Info extends FloraForm_Component
 {
 	
-	function classes( $context = array() )
+	function classes()
 	{
-		return parent::classes( $context)." ff_info";
+		return parent::classes()." ff_info";
 	}
 
-	function render( $context = array() )
+	function render()
 	{
 		$parts = array();
-		$parts["title"] = $this->renderTitle($context);
+		$parts["title"] = $this->renderTitle();
 		$parts["content"] = $this->htmlOption( "content" );
 	
-		return $this->renderBlock( $parts, $context );
+		return $this->renderBlock( $parts );
 	}
 		
 }
@@ -393,56 +447,78 @@ class FloraForm_Field_List extends FloraForm_Field
 	{
 		parent::__construct( $options );
 		if( !$this->hasOption( "min-items" ) ) { $this->options[ "min-items" ] = 3; }
-		if( !$this->hasOption( "extra-items" ) ) { $this->options[ "extra-items" ] = 1; }
+		if( !$this->hasOption( "extra-items" ) ) { $this->options[ "extra-items" ] = 0; }
 	}
 
-	function classes( $context = array() )
+	function classes()
 	{
-		return parent::classes( $context)." ff_list";
+		return parent::classes()." ff_list";
 	}
 
 	function setListType( $type, $options=array() )
 	{
 		$options["id-prefix"] = $this->fullId();
+		if( !array_key_exists( "resourcesURL", $options ) )
+		{
+			$options["resourcesURL"] = $this->options["resourcesURL"];
+		}
 		$this->field = $this->factory( $type, $options );
 		return $this->field;
 	}
 
-	function render( $defaults=array(), $context=array() )
+	function render( $defaults=array() )
 	{
 		$parts = array();
-		$parts["title"] = $this->renderTitle($context);
-		$parts["content"] = $this->renderInput( $defaults, $context );
+		$parts["title"] = $this->renderTitle();
+		$parts["content"] = $this->renderInput( $defaults );
 	
-		return $this->renderBlock( $parts, $context );
+		return $this->renderBlock( $parts );
 	}
-	function renderInput( $defaults=array(), $context=array() )
+	function renderInput( $defaults=array() )
 	{
 		$default = $defaults[$this->id];
 		$n = sizeof( $default ) + $this->option( "extra-items" );
 		if( $n < $this->option( "min-items" ) ) { $n = $this->option( "min-items" ); }
 		$html = "";	
+		$html.= "<ul ".$this->renderIDAttr($i."list").">";
 		for( $i=0; $i<$n; ++$i )
 		{
-			$field = clone $this->field;
-			$field->setId( $i );
-			$html .= "<div class='ff_item ".($i%2?"ff_even":"ff_odd")." ".($i?"":"ff_first")."'>";
-			$html .= "<div class='ff_item_number'>".($i+1)."</div>";
-			$html .= "<div class='ff_item_remove'><a href='#'>remove</a></div>";
-			$html .= "<div class='ff_item_value ".$field->classes( $context )."'>";
-			$html .= $field->renderInput( $default , $context );
-			$html .= "</div>";
-			$html .= "</div>";
+			$html.= $this->renderInputRow( $defaults, $i );
 		}	
+		$html.= "</ul>";
+
+		# create template for new rows
+		$template = $this->renderInputRow( $defaults, "{{ROW_ID}}" );
 		
+		$html.= "<span class='ff_item_add' ".$this->renderIDAttr("add")."><img src='".$this->options["resourcesURL"]."/images/add.png' /> More<span>";
 		$html.="<script>\n";
-		$html.="ff['add_html']['".$this->fullId()."'] = ".json_encode( "hello world" ).";\n";
 		$html.="ff_bindAddButton( '".$this->fullId()."' );\n";
+		for( $i=0; $i<$n; ++$i )
+		{
+			$html.="ff_bindRemoveButton( '".$this->fullId()."',$i );\n";
+		}
+		$html.="ff['lists']['".$this->fullId()."'] = ".json_encode( array(
+			"template" => $template,
+			"next_index" => $n )).";\n";
 		$html.="</script>\n";
-		$html.= "<div>add</div>";
 		return $html;
 	}
-	
+
+	function renderInputRow( $defaults, $i )
+	{
+		$default = $defaults[$this->id];
+		$field = clone $this->field;
+		$field->setId( $i );
+		$html = "";
+		$html .= "<li ".$this->renderIDAttr($i."_row")." class='ff_item ".($i%2?"ff_even":"ff_odd")." ".($i?"":"ff_first")."'>";
+		$html .= "<span class='ff_item_number' ".$this->renderIDAttr($i."_number").">".($i+1)."</span>";
+		$html .= "<span class='ff_item_remove'><img ".$this->renderIDAttr($i."_remove")." src='".$this->options["resourcesURL"]."/images/delete.png' /></span>";
+		$html .= "<span class='ff_item_value ".$field->classes( )."'>";
+		$html .= $field->renderInput( $default );
+		$html .= "</span>";
+		$html .= "</li>";
+		return $html;
+	}
 }
 	
 
