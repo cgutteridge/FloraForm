@@ -76,6 +76,7 @@ abstract class FloraForm_Component
 		# other layout options may go here later
 		if( $this->options["layout"] == "section" ) { return $this->renderBlockSection($parts ); }
 		if( $this->options["layout"] == "horizontal" ) { return $this->renderBlockHorizontal($parts ); }
+		if( $this->options["layout"] == "vertical" ) { return $this->renderBlockVertical($parts ); }
 
 		$h = "";
 		$h.= "<span ".$this->renderIDAttr("container")." class='".$this->classes()."'>";
@@ -88,13 +89,27 @@ abstract class FloraForm_Component
 
 		return $h;
 	}
+	function renderBlockVertical( $parts )
+	{
+		$h = "";
+		$h.= "<span ".$this->renderIDAttr("container")." class='".$this->classes()." ff_vertical'>";
+		if( $parts["title"] != "" )
+		{	
+			$h.= "<span ".$this->renderIDAttr("title")." class='ff_title'>".$parts["title"].":</span>";
+		}
+		$h.= $parts["content"];
+		$h.= "</span>";
+
+		return $h;
+	}
+	
 	function renderBlockHorizontal( $parts )
 	{
 		$h = "";
-		$h.= "<span ".$this->renderIDAttr("container")." style='display:block' class='".$this->classes()."'>";
+		$h.= "<span ".$this->renderIDAttr("container")." class='".$this->classes()." ff_horizontal'>";
 		if( $parts["title"] != "" )
 		{	
-			$h.= "<span ".$this->renderIDAttr("title")." class='ff_title' style='display: inline-block; text-align: right;>".$parts["title"].":</span>";
+			$h.= "<span ".$this->renderIDAttr("title")." class='ff_title'>".$parts["title"].":</span>";
 		}
 		$h.= $parts["content"];
 		$h.= "</span>";
@@ -224,9 +239,17 @@ class FloraForm_Field_Combo extends FloraForm_Component
 	{
 		$default = $defaults[$this->id];
 		$html = array();
+		if( $this->hasOption( "layout" ) )
+		{
+			$html [] = "<span class='ff_combo_".$this->options["layout"]."'>";
+		}
 		foreach( $this->fields as $field )
 		{
 			$html []= $field->render( $default );
+		}
+		if( $this->hasOption( "layout" ) )
+		{
+			$html [] = "</span>";
 		}
 		return join( "", $html );
 	}
@@ -342,7 +365,7 @@ class FloraForm_Field_Text extends FloraForm_Field
 	function renderInput( $defaults=array() )
 	{
 		$default = $defaults[$this->id];
-		$html = "<input name='".$this->id."' ".$this->renderIDAttr()." class='' value='".htmlspecialchars($default)."' />";
+		$html = "<input name='".$this->id."' ".$this->renderIDAttr()." class='ff_input_text' value='".htmlspecialchars($default)."' />";
 		return $html;
 	}
 	
@@ -358,7 +381,7 @@ class FloraForm_Field_HTML extends FloraForm_Field
 	function renderInput( $defaults=array() )
 	{
 		$default = $defaults[$this->id];
-		$html = "<textarea name='".$this->id."' ".$this->renderIDAttr()." class='mceEditor'>".htmlspecialchars($default)."</textarea>";
+		$html = "<textarea name='".$this->id."' ".$this->renderIDAttr()." class='ff_input_html'>".htmlspecialchars($default)."</textarea>";
 
 		return $html;
 	}
@@ -402,7 +425,7 @@ class FloraForm_Field_Choice extends FloraForm_Field
 		foreach( $this->option( "choices" ) as $code=>$value )
 		{
 			$html .= "<label class='ff_radio_option'>";
-			$html .= "<input value='".htmlspecialchars( $code )."'";
+			$html .= "<input class='ff_input_radio' value='".htmlspecialchars( $code )."'";
 			$html .= " name='".$this->id."'";
 			$html .= " type='radio' ";
 			if( $default == $code ) { $html .= " checked='checked'"; }
@@ -490,7 +513,7 @@ class FloraForm_Field_List extends FloraForm_Field
 		# create template for new rows
 		$template = $this->renderInputRow( $defaults, "{{ROW_ID}}" );
 		
-		$html.= "<span class='ff_item_add' ".$this->renderIDAttr("add")."><img src='".$this->options["resourcesURL"]."/images/add.png' /> More<span>";
+		$html.= "<span class='ff_item_add' ".$this->renderIDAttr("add")."><img src='".$this->options["resourcesURL"]."/images/add.png' /> More</span>";
 		$html.="<script>\n";
 		$html.="ff_bindAddButton( '".$this->fullId()."' );\n";
 		for( $i=0; $i<$n; ++$i )

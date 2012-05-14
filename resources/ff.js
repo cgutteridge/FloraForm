@@ -16,7 +16,8 @@ function ff_initWysiwyg()
         	theme_advanced_buttons2 : "",
         	theme_advanced_buttons3 : "",
         	theme_advanced_buttons4 : "",
-		editor_selector : 'mceEditor'
+		editor_selector : 'ff_input_html',
+		content_css : "/db/syllabus/FloraForm/resources/tinymce.css"  
 	});
 }
 
@@ -59,9 +60,10 @@ function ff_restyleList( list_id )
 	list = document.getElementById( list_id+"_list" );
 	for( i=0; i<list.childNodes.length; ++i )
 	{
-		item = list.childNodes[i].id.slice(0,-4);
-		$("#"+item+"_number").html( i+1 );
-		row = $("#"+item+"_row" );
+		row_id = list.childNodes[i].id;
+		item_id = row_id.slice(0,-4);
+		$("#"+item_id+"_number").html( i+1 );
+		row = $("#"+row_id );
 		if( i==0 )
 		{
 			row.addClass( "ff_first" );
