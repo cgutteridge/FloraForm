@@ -1,6 +1,11 @@
 <?php
 
+$f3=require(__DIR__.'/base.php');
 
+$f3->set('DEBUG',3);
+$f3->set('UI',__DIR__.'/../resources/');
+print(__DIR__.'/../resources/');
+$template = new Template;
 class FloraForm extends FloraForm_Section
 {
 
@@ -11,13 +16,21 @@ class FloraForm extends FloraForm_Section
 
 	function render( $defaults=array() )
 	{
-		$h="<form method='POST'>";
+		$h="<form method='POST'";
+		if(isset($this->options["action"])){
+			$h.=" action='".htmlentities($this->options["action"])."'";
+		}
+		$h.=">";
 		$h.=parent::render($defaults);
 		$h.="</form>";
 		return $h;
 	}
-
-
+	
+	function fromForm( &$values, $form_data )
+	{
+		#$values = array();
+		parent::fromForm( $values, $form_data );
+	}
 }
 
 abstract class FloraForm_Component
@@ -43,8 +56,9 @@ abstract class FloraForm_Component
 		$this->options["id-prefix"] = $new_id_prefix;
 	}
 
-	function fromForm( &$values )
+	function fromForm( &$values, $form_data )
 	{
+		return "fromForm() should be subclassed";
 	}
 
 	function render( $defaults=array() )
@@ -71,12 +85,14 @@ abstract class FloraForm_Component
 	{
 		return array_key_exists( $opt_key, $this->options );
 	}	
-	function renderBlock( $parts )
+	function renderComponent( $parts )
 	{
 		# other layout options may go here later
-		if( $this->options["layout"] == "section" ) { return $this->renderBlockSection($parts ); }
-		if( $this->options["layout"] == "horizontal" ) { return $this->renderBlockHorizontal($parts ); }
-		if( $this->options["layout"] == "vertical" ) { return $this->renderBlockVertical($parts ); }
+		if( $this->hasOption( "layout" ) && $this->options["layout"] == "section" ) { return $this->renderComponentSection($parts ); }
+		if( $this->hasOption( "layout" ) && $this->options["layout"] == "block" ) { return $this->renderComponentBlock($parts ); }
+		if( $this->hasOption( "layout" ) && $this->options["layout"] == "horizontal" ) { return $this->renderComponentHorizontal($parts ); }
+		if( $this->hasOption( "layout" ) && $this->options["layout"] == "vertical" ) { return $this->renderComponentVertical($parts ); }
+		if( $this->hasOption( "layout" ) && $this->options["layout"] == "vertical2up" ) { return $this->renderComponentVertical2up($parts ); }
 
 		$h = "";
 		$h.= "<span ".$this->renderIDAttr("container")." class='".$this->classes()."'>";
@@ -89,7 +105,23 @@ abstract class FloraForm_Component
 
 		return $h;
 	}
-	function renderBlockVertical( $parts )
+
+	# nb cut and paste of vertical -- need to refactor?
+	function renderComponentVertical2up( $parts )
+	{
+		$h = "";
+		$h.= "<span ".$this->renderIDAttr("container")." class='".$this->classes()." ff_vertical2up'>";
+		if( $parts["title"] != "" )
+		{	
+			$h.= "<span ".$this->renderIDAttr("title")." class='ff_title'>".$parts["title"].":</span>";
+		}
+		$h.= $parts["content"];
+		$h.= "</span>";
+
+		return $h;
+	}
+	
+	function renderComponentVertical( $parts )
 	{
 		$h = "";
 		$h.= "<span ".$this->renderIDAttr("container")." class='".$this->classes()." ff_vertical'>";
@@ -103,7 +135,7 @@ abstract class FloraForm_Component
 		return $h;
 	}
 	
-	function renderBlockHorizontal( $parts )
+	function renderComponentHorizontal( $parts )
 	{
 		$h = "";
 		$h.= "<span ".$this->renderIDAttr("container")." class='".$this->classes()." ff_horizontal'>";
@@ -117,7 +149,18 @@ abstract class FloraForm_Component
 		return $h;
 	}
 	
-	function renderBlockSection( $parts )
+	function renderComponentBlock( $parts )
+	{
+		$h = "";
+		$h.= "<div ".$this->renderIDAttr("container")." class='".$this->classes()." ff_block'>";
+				
+		$h.= $parts["content"];
+
+		$h.= "</div>";
+
+		return $h;
+	}
+	function renderComponentSection( $parts )
 	{
 		$h = "";
 		$h.= "<div ".$this->renderIDAttr("container")." class='".$this->classes()." ff_section'>";
@@ -149,19 +192,24 @@ abstract class FloraForm_Component
 
 	function renderIDAttr($suffix=null)
 	{
-		if( !$this->id ) { return "";  }
-		$html = "id='".$this->fullId();
-		if( $suffix ) { $html.="_".$suffix; }
-		$html.= "'";
+		if( !isset($this->id) ) { return "";  }
+		return "id='".$this->fullId($suffix)."'";
 
-		return $html;
+	}
+	function renderNameAttr($suffix=null)
+	{
+		if( !isset($this->id) ) { return "";  }
+		return "name='".$this->fullId($suffix)."'";
 	}
 	
-	function fullId()
+	
+	function fullId($suffix=null)
 	{
-		if( !$this->id ) { return ""; }
-		if( $this->options["id-prefix"] ) { return $this->options["id-prefix"]."_".$this->id; }
-		return $this->id;
+		if( !isset($this->id) ) { return ""; }
+		$id = "";
+		if( !empty($this->options["id-prefix"]) ) { $id .= $this->options["id-prefix"]."_"; }
+		$id .= $this->id;
+		if( isset( $suffix ) ){ $id .= "_$suffix"; }
 	}
 
 	function error( $msg )
@@ -173,8 +221,11 @@ abstract class FloraForm_Component
 	function factory( $type, $options )
 	{
 		if( $type == "TEXT" ) { $field = new FloraForm_Field_Text( $options ); }
+		elseif( $type == "TEXTAREA" ) { $field = new FloraForm_Field_Textarea( $options ); }
 		elseif( $type == "HTML" ) { $field = new FloraForm_Field_HTML( $options ); }
 		elseif( $type == "CHOICE" ) { $field = new FloraForm_Field_Choice( $options ); }
+		elseif( $type == "SUBMIT" ) { $field = new FloraForm_Field_Submit( $options ); }
+		elseif( $type == "HIDDEN" ) { $field = new FloraForm_Field_Hidden( $options ); }
 		elseif( $type == "LIST" ) { $field = new FloraForm_Field_List( $options ); }
 		elseif( $type == "COMBO" ) { $field = new FloraForm_Field_Combo( $options ); }
 		elseif( $type == "INFO" ) { $field = new FloraForm_Info( $options ); }
@@ -199,6 +250,17 @@ class FloraForm_Field_Combo extends FloraForm_Component
 	function add( $type, $options=array() )
 	{
 		$options["id-prefix"] = $this->fullId();
+		if( !array_key_exists( "heading", $options ))
+		{
+			if( array_key_exists( "heading", $this->options ) && $this->options["heading"]>0 )
+			{
+				$options["heading"] = $this->options["heading"] + 1;
+			}
+			else
+			{
+				$options["heading"] = 2;
+			}
+		}
 		if( !array_key_exists( "resourcesURL", $options ) )
 		{
 			$options["resourcesURL"] = $this->options["resourcesURL"];
@@ -232,12 +294,13 @@ class FloraForm_Field_Combo extends FloraForm_Component
 		$parts["title"] = $this->renderTitle();
 		$parts["content"] = $this->renderInput( $defaults );
 	
-		return $this->renderBlock( $parts );
+		return $this->renderComponent( $parts );
 	}	
 	
 	function renderInput( $defaults=array() )
 	{
-		$default = $defaults[$this->id];
+		$default = "";
+		if( !empty($defaults[$this->id]) ){ $default = $defaults[$this->id]; }
 		$html = array();
 		if( $this->hasOption( "layout" ) )
 		{
@@ -254,11 +317,12 @@ class FloraForm_Field_Combo extends FloraForm_Component
 		return join( "", $html );
 	}
 
-	function fromForm( &$values )
+	function fromForm( &$values, $form_data )
 	{
+		$values[$this->id] = array();
 		foreach( $this->fields as $field )
 		{
-			$field->fromForm( $values );
+			$field->fromForm( $values[$this->id], $form_data );
 		}
 	}
 
@@ -313,14 +377,14 @@ class FloraForm_Section extends FloraForm_Component
 		}
 		$parts["content"] = join( "", $html );
 	
-		return $this->renderBlock( $parts );
+		return $this->renderComponent( $parts );
 	}	
 
-	function fromForm( &$values )
+	function fromForm( &$values, $form_data )
 	{
 		foreach( $this->fields as $field )
 		{
-			$field->fromForm( $values );
+			$field->fromForm( $values, $form_data );
 		}
 	}
 
@@ -335,7 +399,14 @@ class FloraForm_Section extends FloraForm_Component
 abstract class FloraForm_Field extends FloraForm_Component
 {
 
-
+	function fromForm( &$values, $form_data )
+	{
+		global $_POST;
+		if( $this->id == "" ) { return; }
+		if(array_key_exists($this->fullID(), $form_data)){
+			$values[$this->id] = $form_data[$this->fullID()];
+		}
+	}
 
 	function render( $defaults=array() )
 	{
@@ -345,7 +416,7 @@ abstract class FloraForm_Field extends FloraForm_Component
 		       . $this->renderTitle()."</label>";
 		$parts["content"] = $this->renderInput($defaults );
 
-		return $this->renderBlock( $parts );
+		return $this->renderComponent( $parts );
 	}
 
 	function renderInput( $defaults=array() )
@@ -364,8 +435,14 @@ class FloraForm_Field_Text extends FloraForm_Field
 
 	function renderInput( $defaults=array() )
 	{
-		$default = $defaults[$this->id];
-		$html = "<input name='".$this->id."' ".$this->renderIDAttr()." class='ff_input_text' value='".htmlspecialchars($default)."' />";
+		$default = "";
+		if( !empty($defaults[$this->id]) ){ $default = $defaults[$this->id]; }
+		$html = "";
+		if( $this->hasOption( "prefix" ) ) { $html .= $this->options["prefix"]; }
+		$html.= "<input ".$this->renderNameAttr()." ".$this->renderIDAttr()." class='ff_input_text' value='".htmlspecialchars($default)."' ";
+		if( $this->hasOption( "size" ) ) { $html .= " size='".$this->options["size"]."'"; }
+		$html .= " />";
+		if( $this->hasOption( "suffix" ) ) { $html .= $this->options["suffix"]; }
 		return $html;
 	}
 	
@@ -375,14 +452,37 @@ class FloraForm_Field_Text extends FloraForm_Field
 	}
 }
 
+class FloraForm_Field_Textarea extends FloraForm_Field
+{
+
+	function renderInput( $defaults=array() )
+	{
+		global $f3, $template;
+		$default = "";
+		if( !empty($defaults[$this->id]) ){ $default = $defaults[$this->id]; }
+		$f3->set('default', $default);
+		$f3->set('self', $this);
+		return $template->render('textarea.htm');
+	}
+	
+	function classes()
+	{
+		return parent::classes()." ff_html";
+	}
+}
+
 class FloraForm_Field_HTML extends FloraForm_Field
 {
 
 	function renderInput( $defaults=array() )
 	{
-		$default = $defaults[$this->id];
-		$html = "<textarea name='".$this->id."' ".$this->renderIDAttr()." class='ff_input_html'>".htmlspecialchars($default)."</textarea>";
-
+		$default = "";
+		if( !empty($defaults[$this->id]) ){ $default = $defaults[$this->id]; }
+		$html = "<textarea ".$this->renderNameAttr()." ".$this->renderIDAttr();
+		if( $this->hasOption( "rows" ) ) { $html .= " rows='".$this->options["rows"]."'"; }
+		if( $this->hasOption( "cols" ) ) { $html .= " cols='".$this->options["cols"]."'"; }
+		$html .= " class='ff_input_html'>".htmlspecialchars($default)."</textarea>";
+		$html .= "<script>ff_initWysiwyg( '".$this->fullID()."' );</script>";
 		return $html;
 	}
 	
@@ -406,27 +506,39 @@ class FloraForm_Field_Choice extends FloraForm_Field
 
 	function renderInputPulldown( $defaults )
 	{
-		$default = $defaults[$this->id];
-		$html = "<select name='".$this->id."' ".$this->renderIDAttr()." class=''>";
-		foreach( $this->option( "choices" ) as $code=>$value )
+		$default = "";
+		if( !empty($defaults[$this->id]) ){ $default = $defaults[$this->id]; }
+		$html = "";
+		if( $this->hasOption( "prefix" ) ) { $html .= $this->options["prefix"]; }
+		$html.= "<select ".$this->renderNameAttr()." ".$this->renderIDAttr()." class=''>";
+		foreach( $this->option("choices") as $code=>$value )
 		{
 			$html .= "<option value='".htmlspecialchars( $code )."'";
 			if( $default == $code ) { $html .= " selected='selected'"; }
 			$html .= ">".htmlspecialchars( $value )."</option>";
 		}
 		$html.="</select>";
+		if( $this->hasOption( "suffix" ) ) { $html .= $this->options["suffix"]; }
 		return $html;
 	}
 
 	function renderInputRadio( $defaults )
 	{
-		$default = $defaults[$this->id];
+		$default = "";
+		if( !empty($defaults[$this->id]) ){ $default = $defaults[$this->id]; }
 		#$html = "<select name='".$this->id."' ".$this->renderIDAttr()." class=''>";
+		$html = "";
 		foreach( $this->option( "choices" ) as $code=>$value )
 		{
-			$html .= "<label class='ff_radio_option'>";
+			$class = "ff_radio_option";
+			if( @$this->option( "lots-of-class" ) )
+			{
+				$class .= " ff_radio_option_".$code;
+			}
+				
+			$html .= "<label class='$class'>";
 			$html .= "<input class='ff_input_radio' value='".htmlspecialchars( $code )."'";
-			$html .= " name='".$this->id."'";
+			$html .= " ".$this->renderNameAttr();
 			$html .= " type='radio' ";
 			if( $default == $code ) { $html .= " checked='checked'"; }
 			$html .= " />";
@@ -451,13 +563,13 @@ class FloraForm_Info extends FloraForm_Component
 		return parent::classes()." ff_info";
 	}
 
-	function render()
+	function render($defaults=array())
 	{
 		$parts = array();
 		$parts["title"] = $this->renderTitle();
 		$parts["content"] = $this->htmlOption( "content" );
 	
-		return $this->renderBlock( $parts );
+		return $this->renderComponent( $parts );
 	}
 		
 }
@@ -481,6 +593,18 @@ class FloraForm_Field_List extends FloraForm_Field
 	function setListType( $type, $options=array() )
 	{
 		$options["id-prefix"] = $this->fullId();
+		if( !array_key_exists( "heading", $options ))
+		{
+			if( array_key_exists( "heading", $this->options ) && $this->options["heading"]>0 )
+			{
+				# Lower
+				$options["heading"] = $this->options["heading"]; 
+			}
+			else
+			{
+				$options["heading"] = 2;
+			}
+		}
 		if( !array_key_exists( "resourcesURL", $options ) )
 		{
 			$options["resourcesURL"] = $this->options["resourcesURL"];
@@ -489,20 +613,52 @@ class FloraForm_Field_List extends FloraForm_Field
 		return $this->field;
 	}
 
+	function fromForm( &$values, $form_data )
+	{
+		$i = 0;
+		$done = false;
+		$values[$this->id] = array();
+		while( !$done )
+		{
+			$done = true;
+			foreach( $form_data as $key=>$value )
+			{
+				if( strpos( $key, $this->fullID()."_".$i ) === 0 )
+				{
+					$done = false;
+					break; // done on this loop, try next increment of $i
+				}
+			}
+			if( !$done )
+			{
+				$values[$this->id][$i] = array();
+				$field = clone $this->field;
+				$field->setId( $i );
+				$field->fromForm( $values[$this->id], $form_data );
+			}	
+			$i++;
+		}
+
+		# remove empty lines
+		$values[ $this->id ] = array_filter( $values[$this->id], "FloraForm_var_is_set" );
+	}
+	
 	function render( $defaults=array() )
 	{
 		$parts = array();
 		$parts["title"] = $this->renderTitle();
 		$parts["content"] = $this->renderInput( $defaults );
 	
-		return $this->renderBlock( $parts );
+		return $this->renderComponent( $parts );
 	}
 	function renderInput( $defaults=array() )
 	{
-		$default = $defaults[$this->id];
+		$default = "";
+		if( !empty($defaults[$this->id]) ){ $default = $defaults[$this->id]; }
 		$n = sizeof( $default ) + $this->option( "extra-items" );
 		if( $n < $this->option( "min-items" ) ) { $n = $this->option( "min-items" ); }
 		$html = "";	
+		$i = "";
 		$html.= "<ul ".$this->renderIDAttr($i."list").">";
 		for( $i=0; $i<$n; ++$i )
 		{
@@ -511,7 +667,9 @@ class FloraForm_Field_List extends FloraForm_Field
 		$html.= "</ul>";
 
 		# create template for new rows
-		$template = $this->renderInputRow( $defaults, "{{ROW_ID}}" );
+		#TODO GET HELP FROM CHRIS
+		#$template = $this->renderInputRow( $defaults, "{{ROW_ID}}" );
+		$template = $this->renderInputRow( $defaults, "ROW_ID" );
 		
 		$html.= "<span class='ff_item_add' ".$this->renderIDAttr("add")."><img src='".$this->options["resourcesURL"]."/images/add.png' /> More</span>";
 		$html.="<script>\n";
@@ -529,7 +687,8 @@ class FloraForm_Field_List extends FloraForm_Field
 
 	function renderInputRow( $defaults, $i )
 	{
-		$default = $defaults[$this->id];
+		$default = "";
+		if( !empty($defaults[$this->id]) ){ $default = $defaults[$this->id]; }
 		$field = clone $this->field;
 		$field->setId( $i );
 		$html = "";
@@ -543,7 +702,69 @@ class FloraForm_Field_List extends FloraForm_Field
 		return $html;
 	}
 }
+
+class FloraForm_Field_Submit extends FloraForm_Field
+{
+	function __construct( $options=array() )
+	{
+		parent::__construct( $options );
+		if( !$this->hasOption( "layout" ) ) { $this->options[ "layout" ] = "block"; }
+	}
+
+	function renderInput( $defaults=array() )
+	{
+		$html = "<input type='submit' ".$this->renderNameAttr()." ".$this->renderIDAttr()." class='ff_input_submit' value='".htmlspecialchars($this->options["title"])."' />";
+
+		return $html;
+	}
 	
+	function classes()
+	{
+		return parent::classes()." ff_submit";
+	}
+}
+
+class FloraForm_Field_Hidden extends FloraForm_Field
+{
+	function render( $defaults=array() )
+	{
+		return $this->renderInput( $defaults );
+	}
+	function renderInput( $defaults=array() )
+	{
+		$default = "";
+		if( !empty($defaults[$this->id]) ){ $default = $defaults[$this->id]; }
+		$html = "<input type='hidden' ".$this->renderNameAttr()." ".$this->renderIDAttr()." class='ff_input_submit' value='".htmlspecialchars( $default )."' />";
+
+		return $html;
+	}
+	
+	function classes()
+	{
+		return parent::classes()." ff_hidden";
+	}
+}
+
+function FloraForm_var_is_set( $thing )
+{
+	if( !isset( $thing ) ) { return false; }
+
+	if( is_array($thing) )
+	{
+		if( sizeof( $thing ) == 0 ) { return false; }
+		foreach( $thing as $k=>$v )
+		{
+			if( FloraForm_var_is_set( $v ) ) { return true; }
+		}
+		return false;
+	}
+
+	return !empty( $thing );
+}
+
+
+
+
 
 
 
