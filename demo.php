@@ -1,3 +1,12 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>FloraForm Demo</title>
+	<script type="text/javascript" src="http://www.tinymce.com/js/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.8.3.js"></script>
+	<script type="text/javascript" src="resources/ff.js"></script>
+	<link rel="stylesheet" href="resources/ff.css" />
+</head>
 <?php
 require_once(__DIR__.'/lib/FloraForm.php');
 ini_set('display_errors',1);
@@ -382,14 +391,6 @@ class Demo {
 	}
 }
 ?>
-<html>
-<head>
-	<title>FloraForm Demo</title>
-	<link rel="stylesheet" href="resources/ff.css" />
-	<script type="text/javascript" src="http://www.tinymce.com/js/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
-	<script type="text/javascript" src="http://code.jquery.com/jquery-1.8.3.js"></script>
-	<script type="text/javascript" src="resources/ff.js"></script>
-</head>
 <body>
 <?php $demo = new Demo();
 echo $demo->renderForm();?>

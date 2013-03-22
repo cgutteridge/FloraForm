@@ -4,7 +4,7 @@ $f3=require(__DIR__.'/base.php');
 
 $f3->set('DEBUG',3);
 $f3->set('UI',__DIR__.'/../resources/');
-print(__DIR__.'/../resources/');
+$f3->set('CACHE',FALSE);
 $template = new Template;
 class FloraForm extends FloraForm_Section
 {
@@ -35,17 +35,18 @@ class FloraForm extends FloraForm_Section
 
 abstract class FloraForm_Component
 {
+
+	var $id;
+	var $options;
+	var $default_options = array();
 	function __construct( $options=array() )
 	{
-		$this->options = $options;
+		$this->options = array_merge($this->default_options, $options);
 		if( array_key_exists( "id", $options ))
 		{
 			$this->id = $options["id"];
 		}
 	}
-
-	var $id;
-	var $options;
 
 	function setId( $new_id )
 	{
@@ -210,6 +211,7 @@ abstract class FloraForm_Component
 		if( !empty($this->options["id-prefix"]) ) { $id .= $this->options["id-prefix"]."_"; }
 		$id .= $this->id;
 		if( isset( $suffix ) ){ $id .= "_$suffix"; }
+		return $id;
 	}
 
 	function error( $msg )
@@ -398,7 +400,7 @@ class FloraForm_Section extends FloraForm_Component
 
 abstract class FloraForm_Field extends FloraForm_Component
 {
-
+	var $default_options = array("template"=>"floraform_default.htm");
 	function fromForm( &$values, $form_data )
 	{
 		global $_POST;
@@ -421,7 +423,11 @@ abstract class FloraForm_Field extends FloraForm_Component
 
 	function renderInput( $defaults=array() )
 	{
-		return "<div>renderInput() must be subclassed!</div>";
+		global $f3, $template;
+		$default = isset($defaults[$this->id]) ?  $default = $defaults[$this->id] : "";
+		$f3->set('default', $default);
+		$f3->set('self', $this);
+		return "". $template->render($this->options["template"]);
 	}
 
 	function classes()
@@ -432,19 +438,7 @@ abstract class FloraForm_Field extends FloraForm_Component
 
 class FloraForm_Field_Text extends FloraForm_Field
 {
-
-	function renderInput( $defaults=array() )
-	{
-		$default = "";
-		if( !empty($defaults[$this->id]) ){ $default = $defaults[$this->id]; }
-		$html = "";
-		if( $this->hasOption( "prefix" ) ) { $html .= $this->options["prefix"]; }
-		$html.= "<input ".$this->renderNameAttr()." ".$this->renderIDAttr()." class='ff_input_text' value='".htmlspecialchars($default)."' ";
-		if( $this->hasOption( "size" ) ) { $html .= " size='".$this->options["size"]."'"; }
-		$html .= " />";
-		if( $this->hasOption( "suffix" ) ) { $html .= $this->options["suffix"]; }
-		return $html;
-	}
+	var $default_options = array("template"=>"text.htm");
 	
 	function classes()
 	{
@@ -454,37 +448,18 @@ class FloraForm_Field_Text extends FloraForm_Field
 
 class FloraForm_Field_Textarea extends FloraForm_Field
 {
-
-	function renderInput( $defaults=array() )
-	{
-		global $f3, $template;
-		$default = "";
-		if( !empty($defaults[$this->id]) ){ $default = $defaults[$this->id]; }
-		$f3->set('default', $default);
-		$f3->set('self', $this);
-		return $template->render('textarea.htm');
-	}
+	var $default_options = array("template"=>"textarea.htm");
 	
 	function classes()
 	{
-		return parent::classes()." ff_html";
+		return parent::classes()." ff_textarea";
 	}
 }
 
 class FloraForm_Field_HTML extends FloraForm_Field
 {
 
-	function renderInput( $defaults=array() )
-	{
-		$default = "";
-		if( !empty($defaults[$this->id]) ){ $default = $defaults[$this->id]; }
-		$html = "<textarea ".$this->renderNameAttr()." ".$this->renderIDAttr();
-		if( $this->hasOption( "rows" ) ) { $html .= " rows='".$this->options["rows"]."'"; }
-		if( $this->hasOption( "cols" ) ) { $html .= " cols='".$this->options["cols"]."'"; }
-		$html .= " class='ff_input_html'>".htmlspecialchars($default)."</textarea>";
-		$html .= "<script>ff_initWysiwyg( '".$this->fullID()."' );</script>";
-		return $html;
-	}
+	var $default_options = array("template"=>"htmlarea.htm");
 	
 	function classes()
 	{
@@ -705,18 +680,7 @@ class FloraForm_Field_List extends FloraForm_Field
 
 class FloraForm_Field_Submit extends FloraForm_Field
 {
-	function __construct( $options=array() )
-	{
-		parent::__construct( $options );
-		if( !$this->hasOption( "layout" ) ) { $this->options[ "layout" ] = "block"; }
-	}
-
-	function renderInput( $defaults=array() )
-	{
-		$html = "<input type='submit' ".$this->renderNameAttr()." ".$this->renderIDAttr()." class='ff_input_submit' value='".htmlspecialchars($this->options["title"])."' />";
-
-		return $html;
-	}
+	var $default_options = array( "template"=>"submit.htm", "layout"=>"block" );
 	
 	function classes()
 	{
@@ -726,17 +690,10 @@ class FloraForm_Field_Submit extends FloraForm_Field
 
 class FloraForm_Field_Hidden extends FloraForm_Field
 {
+	var $default_options =  array("template"=>"hidden.htm");
 	function render( $defaults=array() )
 	{
 		return $this->renderInput( $defaults );
-	}
-	function renderInput( $defaults=array() )
-	{
-		$default = "";
-		if( !empty($defaults[$this->id]) ){ $default = $defaults[$this->id]; }
-		$html = "<input type='hidden' ".$this->renderNameAttr()." ".$this->renderIDAttr()." class='ff_input_submit' value='".htmlspecialchars( $default )."' />";
-
-		return $html;
 	}
 	
 	function classes()
