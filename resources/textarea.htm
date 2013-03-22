@@ -1,6 +1,6 @@
 <textarea name="{{@self->fullId()}}" id="{{@self->fullId()}}" class="ff_input_textarea"
 <check if="{{@self->hasOption( 'rows' )}}"><true> rows="{{@self->options['rows']}}"</true></check>
 <check if="{{@self->hasOption( 'cols' )}}"><true> cols="{{@self->options['cols']}}"</true></check>
->{{htmlspecialchars(@default)}}</textarea>
+>{{@default}}</textarea>
 
 

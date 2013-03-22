@@ -1,0 +1,13 @@
+<div id="{{@self->fullId('container')}}" class='{{@self->classes()}} ff_section'>
+	<check if='{{@self->hasOption("title")}}'>
+		<h{{@self->options["heading"]}} class='ff_title'>{{@self->options["title"]}}</h{{@self->options["heading"]}}>
+	</check>
+
+	<check if='{{@self->hasOption( "description" )}}'>
+               <div class='ff_description' id='{{@self->fullId("description")}}'>{{@self->options["description"]}}</div>
+	</check>
+
+	<repeat group="{{@self->fields}}" value="{{@field}}">
+		{{@field->render(@defaults)}}
+	</repeat>
+</div>

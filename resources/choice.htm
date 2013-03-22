@@ -1,0 +1,17 @@
+<check if="{{@self->options['mode'] == 'pull-down'}}">
+	<true>
+		<select name="{{@self->fullId()}}" id="{{@self->fullId()}}" class=''>
+			<repeat group="{{ @self->option('choices') }}" key="{{ @code }}" value="{{ @value }}">
+				<option code="{{@code}}" {{@default == @code ? 'selected="selected"' : ''}}>{{@value}}</options>
+			</repeat>
+		</select>
+	</true>
+	<false>
+		<repeat group="{{@self->option('choices')}}" key="{{@code}}" value="{{@value}}">
+			<label class='ff_radio_option ff_radio_option_{{@code}}'>
+				<input class='ff_input_radio' value='{{@code}}' name='{{@self->fullId()}}' type='radio'	{{ @default == @code ? " checked='checked'" : "" }} />
+			{{@value}}
+			</label>
+		</repeat>
+	</false>
+</check>

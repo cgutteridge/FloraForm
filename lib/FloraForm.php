@@ -16,19 +16,14 @@ class FloraForm extends FloraForm_Section
 
 	function render( $defaults=array() )
 	{
-		$h="<form method='POST'";
-		if(isset($this->options["action"])){
-			$h.=" action='".htmlentities($this->options["action"])."'";
-		}
-		$h.=">";
-		$h.=parent::render($defaults);
-		$h.="</form>";
-		return $h;
+		global $f3, $template;
+		$f3->set('form_content', parent::render($defaults));
+		$f3->set('self', $this);
+		return $template->render('form.htm');
 	}
 	
 	function fromForm( &$values, $form_data )
 	{
-		#$values = array();
 		parent::fromForm( $values, $form_data );
 	}
 }
@@ -89,7 +84,6 @@ abstract class FloraForm_Component
 	function renderComponent( $parts )
 	{
 		# other layout options may go here later
-		if( $this->hasOption( "layout" ) && $this->options["layout"] == "section" ) { return $this->renderComponentSection($parts ); }
 		if( $this->hasOption( "layout" ) && $this->options["layout"] == "block" ) { return $this->renderComponentBlock($parts ); }
 		if( $this->hasOption( "layout" ) && $this->options["layout"] == "horizontal" ) { return $this->renderComponentHorizontal($parts ); }
 		if( $this->hasOption( "layout" ) && $this->options["layout"] == "vertical" ) { return $this->renderComponentVertical($parts ); }
@@ -154,30 +148,6 @@ abstract class FloraForm_Component
 	{
 		$h = "";
 		$h.= "<div ".$this->renderIDAttr("container")." class='".$this->classes()." ff_block'>";
-				
-		$h.= $parts["content"];
-
-		$h.= "</div>";
-
-		return $h;
-	}
-	function renderComponentSection( $parts )
-	{
-		$h = "";
-		$h.= "<div ".$this->renderIDAttr("container")." class='".$this->classes()." ff_section'>";
-		if( array_key_exists( "title", $parts ) && $parts["title"] != "" )
-		{
-			$h.= "<h".$this->options["heading"]." class='ff_title'>";
-			$h.= $parts["title"];
-			$h.= "</h".$this->options["heading"].">";
-		}
-
-		if( $this->hasOption( "description" ) )
-		{
-			$h.= "<div class='ff_description' ".$this->renderIDAttr("description").">";
-			$h.= $this->option( "description" );
-			$h.= "</div>";
-		}
 				
 		$h.= $parts["content"];
 
@@ -337,6 +307,7 @@ class FloraForm_Field_Combo extends FloraForm_Component
 class FloraForm_Section extends FloraForm_Component
 {
 	var $fields = array();
+	var $default_options = array("template"=>"section.htm");
 
 	function __construct( $options=array() )
 	{
@@ -370,16 +341,12 @@ class FloraForm_Section extends FloraForm_Component
 
 	function render( $defaults=array() )
 	{
-		$parts = array();
-		$parts["title"] = $this->renderTitle();
-		$html = array();
-		foreach( $this->fields as $field )
-		{
-			$html []= $field->render( $defaults );
-		}
-		$parts["content"] = join( "", $html );
-	
-		return $this->renderComponent( $parts );
+		global $f3, $template;
+
+		$f3->set('self', $this);
+		$f3->set('defaults', $defaults);
+
+		return $template->render($this->options["template"]);
 	}	
 
 	function fromForm( &$values, $form_data )
@@ -427,7 +394,7 @@ abstract class FloraForm_Field extends FloraForm_Component
 		$default = isset($defaults[$this->id]) ?  $default = $defaults[$this->id] : "";
 		$f3->set('default', $default);
 		$f3->set('self', $this);
-		return "". $template->render($this->options["template"]);
+		return $template->render($this->options["template"]);
 	}
 
 	function classes()
@@ -471,58 +438,7 @@ class FloraForm_Field_HTML extends FloraForm_Field
 
 class FloraForm_Field_Choice extends FloraForm_Field
 {
-
-	function renderInput( $defaults=array() )
-	{
-		if( $this->options['mode'] == 'pull-down' ) { return $this->renderInputPulldown( $defaults ); }
-		if( $this->options['mode'] == 'radio' ) { return $this->renderInputRadio( $defaults ); }
-		return $this->renderInputPulldown( $defaults ); 
-	}
-
-	function renderInputPulldown( $defaults )
-	{
-		$default = "";
-		if( !empty($defaults[$this->id]) ){ $default = $defaults[$this->id]; }
-		$html = "";
-		if( $this->hasOption( "prefix" ) ) { $html .= $this->options["prefix"]; }
-		$html.= "<select ".$this->renderNameAttr()." ".$this->renderIDAttr()." class=''>";
-		foreach( $this->option("choices") as $code=>$value )
-		{
-			$html .= "<option value='".htmlspecialchars( $code )."'";
-			if( $default == $code ) { $html .= " selected='selected'"; }
-			$html .= ">".htmlspecialchars( $value )."</option>";
-		}
-		$html.="</select>";
-		if( $this->hasOption( "suffix" ) ) { $html .= $this->options["suffix"]; }
-		return $html;
-	}
-
-	function renderInputRadio( $defaults )
-	{
-		$default = "";
-		if( !empty($defaults[$this->id]) ){ $default = $defaults[$this->id]; }
-		#$html = "<select name='".$this->id."' ".$this->renderIDAttr()." class=''>";
-		$html = "";
-		foreach( $this->option( "choices" ) as $code=>$value )
-		{
-			$class = "ff_radio_option";
-			if( @$this->option( "lots-of-class" ) )
-			{
-				$class .= " ff_radio_option_".$code;
-			}
-				
-			$html .= "<label class='$class'>";
-			$html .= "<input class='ff_input_radio' value='".htmlspecialchars( $code )."'";
-			$html .= " ".$this->renderNameAttr();
-			$html .= " type='radio' ";
-			if( $default == $code ) { $html .= " checked='checked'"; }
-			$html .= " />";
-			$html .= $value;
-			$html .= "</label>";
-		}
-		#$html.="</select>";
-		return $html;
-	}
+	var $default_options = array("template"=>"choice.htm");
 	
 	function classes()
 	{
@@ -552,7 +468,7 @@ class FloraForm_Info extends FloraForm_Component
 class FloraForm_Field_List extends FloraForm_Field
 {
 	var $field;
-
+	var $default_options = array("template"=>"list.htm", "min-items"=>3, "extra-items"=>0);
 	function __construct( $options=array() )
 	{
 		parent::__construct( $options );
@@ -626,40 +542,40 @@ class FloraForm_Field_List extends FloraForm_Field
 	
 		return $this->renderComponent( $parts );
 	}
-	function renderInput( $defaults=array() )
-	{
-		$default = "";
-		if( !empty($defaults[$this->id]) ){ $default = $defaults[$this->id]; }
-		$n = sizeof( $default ) + $this->option( "extra-items" );
-		if( $n < $this->option( "min-items" ) ) { $n = $this->option( "min-items" ); }
-		$html = "";	
-		$i = "";
-		$html.= "<ul ".$this->renderIDAttr($i."list").">";
-		for( $i=0; $i<$n; ++$i )
-		{
-			$html.= $this->renderInputRow( $defaults, $i );
-		}	
-		$html.= "</ul>";
-
-		# create template for new rows
-		#TODO GET HELP FROM CHRIS
-		#$template = $this->renderInputRow( $defaults, "{{ROW_ID}}" );
-		$template = $this->renderInputRow( $defaults, "ROW_ID" );
-		
-		$html.= "<span class='ff_item_add' ".$this->renderIDAttr("add")."><img src='".$this->options["resourcesURL"]."/images/add.png' /> More</span>";
-		$html.="<script>\n";
-		$html.="ff_bindAddButton( '".$this->fullId()."' );\n";
-		for( $i=0; $i<$n; ++$i )
-		{
-			$html.="ff_bindRemoveButton( '".$this->fullId()."',$i );\n";
-		}
-		$html.="ff['lists']['".$this->fullId()."'] = ".json_encode( array(
-			"template" => $template,
-			"next_index" => $n )).";\n";
-		$html.="</script>\n";
-		return $html;
-	}
-
+#	function renderInput( $defaults=array() )
+#	{
+#		$default = "";
+#		if( !empty($defaults[$this->id]) ){ $default = $defaults[$this->id]; }
+#		$n = sizeof( $default ) + $this->option( "extra-items" );
+#		if( $n < $this->option( "min-items" ) ) { $n = $this->option( "min-items" ); }
+#		$html = "";	
+#		$i = "";
+#		$html.= "<ul ".$this->renderIDAttr($i."list").">";
+#		for( $i=0; $i<$n; ++$i )
+#		{
+#			$html.= $this->renderInputRow( $defaults, $i );
+#		}	
+#		$html.= "</ul>";
+#
+#		# create template for new rows
+#		#TODO GET HELP FROM CHRIS
+#		#$template = $this->renderInputRow( $defaults, "{{ROW_ID}}" );
+#		$template = $this->renderInputRow( $defaults, "ROW_ID" );
+#		
+#		$html.= "<span class='ff_item_add' ".$this->renderIDAttr("add")."><img src='".$this->options["resourcesURL"]."/images/add.png' /> More</span>";
+#		$html.="<script>\n";
+#		$html.="ff_bindAddButton( '".$this->fullId()."' );\n";
+#		for( $i=0; $i<$n; ++$i )
+#		{
+#			$html.="ff_bindRemoveButton( '".$this->fullId()."',$i );\n";
+#		}
+#		$html.="ff['lists']['".$this->fullId()."'] = ".json_encode( array(
+#			"template" => $template,
+#			"next_index" => $n )).";\n";
+#		$html.="</script>\n";
+#		return $html;
+#	}
+#
 	function renderInputRow( $defaults, $i )
 	{
 		$default = "";
