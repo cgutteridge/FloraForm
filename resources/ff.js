@@ -17,7 +17,7 @@ function ff_initWysiwyg()
         	theme_advanced_buttons3 : "",
         	theme_advanced_buttons4 : "",
 		editor_selector : 'ff_input_html',
-		content_css : "/db/syllabus/FloraForm/resources/tinymce.css"  
+		content_css : "resources/tinymce.css"  
 	});
 }
 

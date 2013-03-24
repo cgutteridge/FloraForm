@@ -586,19 +586,19 @@ class FloraForm_Field_List extends FloraForm_Field
                 $f3->set('self', $this);
                 return $template->render($this->options["list_template"]);
 
-		$default = "";
-		if( !empty($defaults[$this->id]) ){ $default = $defaults[$this->id]; }
-		$field = clone $this->field;
-		$field->setId( $i );
-		$html = "";
-		$html .= "<li ".$this->renderIDAttr($i."_row")." class='ff_item ".($i%2?"ff_even":"ff_odd")." ".($i?"":"ff_first")."'>";
-		$html .= "<span class='ff_item_number' ".$this->renderIDAttr($i."_number").">".($i+1)."</span>";
-		$html .= "<span class='ff_item_remove'><img ".$this->renderIDAttr($i."_remove")." src='".$this->options["resourcesURL"]."/images/delete.png' /></span>";
-		$html .= "<span class='ff_item_value ".$field->classes( )."'>";
-		$html .= $field->renderInput( $default );
-		$html .= "</span>";
-		$html .= "</li>";
-		return $html;
+#		$default = "";
+#		if( !empty($defaults[$this->id]) ){ $default = $defaults[$this->id]; }
+#		$field = clone $this->field;
+#		$field->setId( $i );
+#		$html = "";
+#		$html .= "<li ".$this->renderIDAttr($i."_row")." class='ff_item ".($i%2?"ff_even":"ff_odd")." ".($i?"":"ff_first")."'>";
+#		$html .= "<span class='ff_item_number' ".$this->renderIDAttr($i."_number").">".($i+1)."</span>";
+#		$html .= "<span class='ff_item_remove'><img ".$this->renderIDAttr($i."_remove")." src='".$this->options["resourcesURL"]."/images/delete.png' /></span>";
+#		$html .= "<span class='ff_item_value ".$field->classes( )."'>";
+#		$html .= $field->renderInput( $default );
+#		$html .= "</span>";
+#		$html .= "</li>";
+#		return $html;
 	}
 }
 
