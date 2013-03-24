@@ -468,7 +468,7 @@ class FloraForm_Info extends FloraForm_Component
 class FloraForm_Field_List extends FloraForm_Field
 {
 	var $field;
-	var $default_options = array("template"=>"list.htm", "min-items"=>3, "extra-items"=>0);
+	var $default_options = array("template"=>"list.htm", "list_template"=>"list_item.htm", "min-items"=>3, "extra-items"=>0);
 	function __construct( $options=array() )
 	{
 		parent::__construct( $options );
@@ -578,6 +578,14 @@ class FloraForm_Field_List extends FloraForm_Field
 #
 	function renderInputRow( $defaults, $i )
 	{
+		global $f3, $template;
+                $default = isset($defaults[$this->id]) ?  $default = $defaults[$this->id] : "";
+                $f3->set('i', $i);
+                $f3->set('default', $default);
+                $f3->set('defaults', $defaults);
+                $f3->set('self', $this);
+                return $template->render($this->options["list_template"]);
+
 		$default = "";
 		if( !empty($defaults[$this->id]) ){ $default = $defaults[$this->id]; }
 		$field = clone $this->field;

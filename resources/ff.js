@@ -45,7 +45,7 @@ function ff_addRow( list_id )
 	ff['lists'][list_id]["next_index"]++;
 
 	html = ff['lists'][list_id]["template"];
-	html = html.replace( /{{ROW_ID}}/g, new_n );
+	html = html.replace( /ROW_ID/g, new_n );
 
 	$("#"+list_id+"_list" ).append( $(html) );
 
@@ -57,10 +57,10 @@ function ff_addRow( list_id )
 
 function ff_restyleList( list_id )
 {
-	list = document.getElementById( list_id+"_list" );
-	for( i=0; i<list.childNodes.length; ++i )
+	list = $( "#"+list_id+"_list li" );
+	for( i=0; i<list.length; ++i )
 	{
-		row_id = list.childNodes[i].id;
+		row_id = list[i].id;
 		item_id = row_id.slice(0,-4);
 		$("#"+item_id+"_number").html( i+1 );
 		row = $("#"+row_id );

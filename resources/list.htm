@@ -1,32 +1,19 @@
-{{ ""; @n = sizeof( $default ) + @self->option( "extra-items" ) }} 
+{{ ""; @n = sizeof( @default ) + @self->option( "extra-items" ) }} 
 <check if="{{@n < @self->option( 'min-items' )}}">
 	{{ ""; @n = @self->option( "min-items" ) }}
 </check>
-<ul id="{{@self->fullId()}}">
-<repeat group="{{range( 0, @n )}}" value="{{@i}}">
-	<li id="{{@i}}_row" class='ff_item {{@i%2?"ff_even":"ff_odd"}} {{$i?"":"ff_first"}}'>
-		<span class='ff_item_number' id='{{@i}}_number'>{{@i+1}}</span>
-		<span class='ff_item_remove'><img id="{{@self->fullId(@i.'_remove')}}" src="@self->options['resourcesURL']}}/images/delete.png" /></span>
-		{{ ""; @field = clone @self->field}}
-		{{ ""; @field->setId( $i )}}
-		<span class='ff_item_value {{@field->classes( )}}'>{{@field->renderInput( $default ) | raw }}</span>
-	</li>
-</repeat>
+<ul id="{{@self->fullId('list')}}">
+	<repeat group="{{range( 0, @n-1 )}}" value="{{@i}}">
+		{{@self->renderInputRow( @defaults, @i )}}
+	</repeat>
 </ul>
-<exclude>
-		$template = $this->renderInputRow( $defaults, "ROW_ID" );
-		
-		$html.= "<span class='ff_item_add' ".$this->renderIDAttr("add")."><img src='".$this->options["resourcesURL"]."/images/add.png' /> More</span>";
-		$html.="<script>\n";
-		$html.="ff_bindAddButton( '".$this->fullId()."' );\n";
-		for( $i=0; $i<$n; ++$i )
-		{
-			$html.="ff_bindRemoveButton( '".$this->fullId()."',$i );\n";
-		}
-		$html.="ff['lists']['".$this->fullId()."'] = ".json_encode( array(
-			"template" => $template,
-			"next_index" => $n )).";\n";
-		$html.="</script>\n";
-		return $html;
-	}
-</exclude>
+<span class='ff_item_add' id="{{@self->fullId('add')}}"><img src='{{@self->options["resourcesURL"]}}/images/add.png' /> More</span>
+<script type="text/javascript">
+	ff_bindAddButton( '{{@self->fullId()}}' );
+<repeat group="{{range( 0, @n-1 )}}" value="{{@i}}">
+	ff_bindRemoveButton( '{{@self->fullId()}}',{{@i}} );
+</repeat>
+ff['lists']['{{@self->fullId()}}'] = {{json_encode( array(
+	"template" => @self->renderInputRow( @defaults, "ROW_ID" ),
+	"next_index" => @n ))}}
+</script>
