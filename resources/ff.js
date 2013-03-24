@@ -29,7 +29,7 @@ function ff_bindRemoveButton( list_id, n )
 function ff_removeRow( list_id, n )
 {
 	row = $('#'+list_id+"_"+n+'_row' );
-	row.effect( "blind", {}, 200, function() { row.remove(); ff_restyleList( list_id ); } ); 
+	row.slideUp( 400, function() { row.remove(); ff_restyleList( list_id ); } ); 
 }
 
 
