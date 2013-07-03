@@ -2,7 +2,7 @@
 	<true>
 		<select name="{{@self->fullId()}}" id="{{@self->fullId()}}" class=''>
 			<repeat group="{{ @self->option('choices') }}" key="{{ @code }}" value="{{ @value }}">
-				<option code="{{@code}}" {{@default == @code ? 'selected="selected"' : ''}}>{{@value}}</options>
+				<option code="{{@code}}" {{@default == @code ? 'selected="selected"' : ''}}>{{@value}}</option>
 			</repeat>
 		</select>
 	</true>

@@ -249,9 +249,6 @@ class Demo {
 			"id" => "weeknos",
 			"layout" => "vertical2up",
 			"title" => "Week no(s)" ));
-		$ass_combo->add( "INFO", array( 
-			"layout" => "block",
-			"content_html" => "Feedback:" ));
 		$ass_combo->add( "TEXTAREA", array(
 			"id" => "feedback",
 			"rows" => "3",
@@ -363,7 +360,7 @@ class Demo {
 			"id" => "syllabusid",
 		));
 		$form->add( "SUBMIT", array( 
-			"title" => "Save Changes",
+			"text" => "Save Changes",
 		));
 
 

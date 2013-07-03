@@ -33,7 +33,7 @@ abstract class FloraForm_Component
 
 	var $id;
 	var $options;
-	var $default_options = array();
+	var $default_options = array("template"=>"floraform_default.htm", "surround"=>"component_surround.htm");
 	function __construct( $options=array() )
 	{
 		$this->options = array_merge($this->default_options, $options);
@@ -59,7 +59,22 @@ abstract class FloraForm_Component
 
 	function render( $defaults=array() )
 	{
-		return "render() should be subclassed";
+		global $f3, $template;
+		$default = isset($defaults[$this->id]) ?  $default = $defaults[$this->id] : "";
+		$f3->set('default', $default);
+		$f3->set('defaults', $defaults);
+		$f3->set('self', $this);
+
+		return $template->render($this->options["surround"]);
+	}
+
+	function renderInput( $defaults=array() )
+	{
+		global $f3, $template;
+		$default = isset($defaults[$this->id]) ?  $default = $defaults[$this->id] : "";
+		$f3->set('default', $default);
+		$f3->set('self', $this);
+		return $template->render($this->options["template"]);
 	}
 
 	function renderTitle()
@@ -81,98 +96,22 @@ abstract class FloraForm_Component
 	{
 		return array_key_exists( $opt_key, $this->options );
 	}	
-	function renderComponent( $parts )
+
+	function add( $type, $options=array() )
 	{
-		# other layout options may go here later
-		if( $this->hasOption( "layout" ) && $this->options["layout"] == "block" ) { return $this->renderComponentBlock($parts ); }
-		if( $this->hasOption( "layout" ) && $this->options["layout"] == "horizontal" ) { return $this->renderComponentHorizontal($parts ); }
-		if( $this->hasOption( "layout" ) && $this->options["layout"] == "vertical" ) { return $this->renderComponentVertical($parts ); }
-		if( $this->hasOption( "layout" ) && $this->options["layout"] == "vertical2up" ) { return $this->renderComponentVertical2up($parts ); }
+		$options["heading"] = $this->option("heading") + 1;
+		$options["resourcesURL"] = $this->option("resourcesURL");
 
-		$h = "";
-		$h.= "<span ".$this->renderIDAttr("container")." class='".$this->classes()."'>";
-		if( $parts["title"] != "" )
-		{	
-			$h.= "<span ".$this->renderIDAttr("title")." class='ff_title'>".$parts["title"].":</span>";
-		}
-		$h.= $parts["content"];
-		$h.= "</span>";
+		$field = $this->factory( $type, $options );
+		$this->fields []= $field;
 
-		return $h;
-	}
-
-	# nb cut and paste of vertical -- need to refactor?
-	function renderComponentVertical2up( $parts )
-	{
-		$h = "";
-		$h.= "<span ".$this->renderIDAttr("container")." class='".$this->classes()." ff_vertical2up'>";
-		if( $parts["title"] != "" )
-		{	
-			$h.= "<span ".$this->renderIDAttr("title")." class='ff_title'>".$parts["title"].":</span>";
-		}
-		$h.= $parts["content"];
-		$h.= "</span>";
-
-		return $h;
-	}
-	
-	function renderComponentVertical( $parts )
-	{
-		$h = "";
-		$h.= "<span ".$this->renderIDAttr("container")." class='".$this->classes()." ff_vertical'>";
-		if( $parts["title"] != "" )
-		{	
-			$h.= "<span ".$this->renderIDAttr("title")." class='ff_title'>".$parts["title"].":</span>";
-		}
-		$h.= $parts["content"];
-		$h.= "</span>";
-
-		return $h;
-	}
-	
-	function renderComponentHorizontal( $parts )
-	{
-		$h = "";
-		$h.= "<span ".$this->renderIDAttr("container")." class='".$this->classes()." ff_horizontal'>";
-		if( $parts["title"] != "" )
-		{	
-			$h.= "<span ".$this->renderIDAttr("title")." class='ff_title'>".$parts["title"].":</span>";
-		}
-		$h.= $parts["content"];
-		$h.= "</span>";
-
-		return $h;
-	}
-	
-	function renderComponentBlock( $parts )
-	{
-		$h = "";
-		$h.= "<div ".$this->renderIDAttr("container")." class='".$this->classes()." ff_block'>";
-				
-		$h.= $parts["content"];
-
-		$h.= "</div>";
-
-		return $h;
+		return $field;
 	}
 
 	function classes()
 	{
 		return "ff_component";
 	}
-
-	function renderIDAttr($suffix=null)
-	{
-		if( !isset($this->id) ) { return "";  }
-		return "id='".$this->fullId($suffix)."'";
-
-	}
-	function renderNameAttr($suffix=null)
-	{
-		if( !isset($this->id) ) { return "";  }
-		return "name='".$this->fullId($suffix)."'";
-	}
-	
 	
 	function fullId($suffix=null)
 	{
@@ -212,35 +151,12 @@ abstract class FloraForm_Component
 
 class FloraForm_Field_Combo extends FloraForm_Component
 {
+	var $default_options = array("template"=>"combo.htm", "surround"=>"component_surround.htm", "heading"=>2);
 	var $fields = array();
 
 	function __construct( $options=array() )
 	{
 		parent::__construct( $options );
-	}
-
-	function add( $type, $options=array() )
-	{
-		$options["id-prefix"] = $this->fullId();
-		if( !array_key_exists( "heading", $options ))
-		{
-			if( array_key_exists( "heading", $this->options ) && $this->options["heading"]>0 )
-			{
-				$options["heading"] = $this->options["heading"] + 1;
-			}
-			else
-			{
-				$options["heading"] = 2;
-			}
-		}
-		if( !array_key_exists( "resourcesURL", $options ) )
-		{
-			$options["resourcesURL"] = $this->options["resourcesURL"];
-		}
-		$field = $this->factory( $type, $options );
-		$this->fields []= $field;
-
-		return $field;
 	}
 
 	function setIdPrefix( $new_id_prefix )
@@ -258,35 +174,6 @@ class FloraForm_Field_Combo extends FloraForm_Component
 		{
 			$field->setIdPrefix( $this->fullId() );
 		}
-	}
-
-	function render( $defaults=array() )
-	{
-		$parts = array();
-		$parts["title"] = $this->renderTitle();
-		$parts["content"] = $this->renderInput( $defaults );
-	
-		return $this->renderComponent( $parts );
-	}	
-	
-	function renderInput( $defaults=array() )
-	{
-		$default = "";
-		if( !empty($defaults[$this->id]) ){ $default = $defaults[$this->id]; }
-		$html = array();
-		if( $this->hasOption( "layout" ) )
-		{
-			$html [] = "<span class='ff_combo_".$this->options["layout"]."'>";
-		}
-		foreach( $this->fields as $field )
-		{
-			$html []= $field->render( $default );
-		}
-		if( $this->hasOption( "layout" ) )
-		{
-			$html [] = "</span>";
-		}
-		return join( "", $html );
 	}
 
 	function fromForm( &$values, $form_data )
@@ -307,36 +194,12 @@ class FloraForm_Field_Combo extends FloraForm_Component
 class FloraForm_Section extends FloraForm_Component
 {
 	var $fields = array();
-	var $default_options = array("template"=>"section.htm");
+	var $default_options = array("template"=>"section.htm", "heading"=>2);
 
 	function __construct( $options=array() )
 	{
 		parent::__construct( $options );
 		$this->options["layout"] = "section"; 
-	}
-
-	function add( $type, $options=array() )
-	{
-		if( !array_key_exists( "heading", $options ))
-		{
-			if( array_key_exists( "heading", $this->options ) && $this->options["heading"]>0 )
-			{
-				$options["heading"] = $this->options["heading"] + 1;
-			}
-			else
-			{
-				$options["heading"] = 2;
-			}
-		}
-		if( !array_key_exists( "resourcesURL", $options ) )
-		{
-			$options["resourcesURL"] = $this->options["resourcesURL"];
-		}
-
-		$field = $this->factory( $type, $options );
-		$this->fields []= $field;
-
-		return $field;
 	}
 
 	function render( $defaults=array() )
@@ -367,7 +230,7 @@ class FloraForm_Section extends FloraForm_Component
 
 abstract class FloraForm_Field extends FloraForm_Component
 {
-	var $default_options = array("template"=>"floraform_default.htm");
+	var $default_options = array("template"=>"floraform_default.htm", "surround"=>"field_surround.htm");
 	function fromForm( &$values, $form_data )
 	{
 		global $_POST;
@@ -375,26 +238,6 @@ abstract class FloraForm_Field extends FloraForm_Component
 		if(array_key_exists($this->fullID(), $form_data)){
 			$values[$this->id] = $form_data[$this->fullID()];
 		}
-	}
-
-	function render( $defaults=array() )
-	{
-		$parts = array();
-		
-		$parts["title"] = "<label for='".$this->id."' ".$this->renderIDAttr("label").">"
-		       . $this->renderTitle()."</label>";
-		$parts["content"] = $this->renderInput($defaults );
-
-		return $this->renderComponent( $parts );
-	}
-
-	function renderInput( $defaults=array() )
-	{
-		global $f3, $template;
-		$default = isset($defaults[$this->id]) ?  $default = $defaults[$this->id] : "";
-		$f3->set('default', $default);
-		$f3->set('self', $this);
-		return $template->render($this->options["template"]);
 	}
 
 	function classes()
@@ -405,7 +248,7 @@ abstract class FloraForm_Field extends FloraForm_Component
 
 class FloraForm_Field_Text extends FloraForm_Field
 {
-	var $default_options = array("template"=>"text.htm");
+	var $default_options = array("template"=>"text.htm", "surround"=>"field_surround.htm");
 	
 	function classes()
 	{
@@ -415,7 +258,7 @@ class FloraForm_Field_Text extends FloraForm_Field
 
 class FloraForm_Field_Textarea extends FloraForm_Field
 {
-	var $default_options = array("template"=>"textarea.htm");
+	var $default_options = array("template"=>"textarea.htm", "surround"=>"field_surround.htm");
 	
 	function classes()
 	{
@@ -426,7 +269,7 @@ class FloraForm_Field_Textarea extends FloraForm_Field
 class FloraForm_Field_HTML extends FloraForm_Field
 {
 
-	var $default_options = array("template"=>"htmlarea.htm");
+	var $default_options = array("template"=>"htmlarea.htm", "surround"=>"field_surround.htm");
 	
 	function classes()
 	{
@@ -438,7 +281,7 @@ class FloraForm_Field_HTML extends FloraForm_Field
 
 class FloraForm_Field_Choice extends FloraForm_Field
 {
-	var $default_options = array("template"=>"choice.htm");
+	var $default_options = array("template"=>"choice.htm", "surround"=>"field_surround.htm");
 	
 	function classes()
 	{
@@ -449,18 +292,15 @@ class FloraForm_Field_Choice extends FloraForm_Field
 class FloraForm_Info extends FloraForm_Component
 {
 	
+	var $default_options = array("surround"=>"component_surround.htm");
 	function classes()
 	{
 		return parent::classes()." ff_info";
 	}
-
-	function render($defaults=array())
-	{
-		$parts = array();
-		$parts["title"] = $this->renderTitle();
-		$parts["content"] = $this->htmlOption( "content" );
 	
-		return $this->renderComponent( $parts );
+	function renderInput($defaults=array())
+	{
+		return $this->htmlOption("content");
 	}
 		
 }
@@ -468,12 +308,10 @@ class FloraForm_Info extends FloraForm_Component
 class FloraForm_Field_List extends FloraForm_Field
 {
 	var $field;
-	var $default_options = array("template"=>"list.htm", "list_template"=>"list_item.htm", "min-items"=>3, "extra-items"=>0);
+	var $default_options = array("template"=>"list.htm", "list_template"=>"list_item.htm", "heading"=>2, "min-items"=>3, "extra-items"=>0, "surround"=>"field_surround.htm");
 	function __construct( $options=array() )
 	{
 		parent::__construct( $options );
-		if( !$this->hasOption( "min-items" ) ) { $this->options[ "min-items" ] = 3; }
-		if( !$this->hasOption( "extra-items" ) ) { $this->options[ "extra-items" ] = 0; }
 	}
 
 	function classes()
@@ -484,22 +322,9 @@ class FloraForm_Field_List extends FloraForm_Field
 	function setListType( $type, $options=array() )
 	{
 		$options["id-prefix"] = $this->fullId();
-		if( !array_key_exists( "heading", $options ))
-		{
-			if( array_key_exists( "heading", $this->options ) && $this->options["heading"]>0 )
-			{
-				# Lower
-				$options["heading"] = $this->options["heading"]; 
-			}
-			else
-			{
-				$options["heading"] = 2;
-			}
-		}
-		if( !array_key_exists( "resourcesURL", $options ) )
-		{
-			$options["resourcesURL"] = $this->options["resourcesURL"];
-		}
+		$options["heading"] = $this->option("heading");
+		$options["resourcesURL"] = $this->option("resourcesURL");
+
 		$this->field = $this->factory( $type, $options );
 		return $this->field;
 	}
@@ -534,48 +359,6 @@ class FloraForm_Field_List extends FloraForm_Field
 		$values[ $this->id ] = array_filter( $values[$this->id], "FloraForm_var_is_set" );
 	}
 	
-	function render( $defaults=array() )
-	{
-		$parts = array();
-		$parts["title"] = $this->renderTitle();
-		$parts["content"] = $this->renderInput( $defaults );
-	
-		return $this->renderComponent( $parts );
-	}
-#	function renderInput( $defaults=array() )
-#	{
-#		$default = "";
-#		if( !empty($defaults[$this->id]) ){ $default = $defaults[$this->id]; }
-#		$n = sizeof( $default ) + $this->option( "extra-items" );
-#		if( $n < $this->option( "min-items" ) ) { $n = $this->option( "min-items" ); }
-#		$html = "";	
-#		$i = "";
-#		$html.= "<ul ".$this->renderIDAttr($i."list").">";
-#		for( $i=0; $i<$n; ++$i )
-#		{
-#			$html.= $this->renderInputRow( $defaults, $i );
-#		}	
-#		$html.= "</ul>";
-#
-#		# create template for new rows
-#		#TODO GET HELP FROM CHRIS
-#		#$template = $this->renderInputRow( $defaults, "{{ROW_ID}}" );
-#		$template = $this->renderInputRow( $defaults, "ROW_ID" );
-#		
-#		$html.= "<span class='ff_item_add' ".$this->renderIDAttr("add")."><img src='".$this->options["resourcesURL"]."/images/add.png' /> More</span>";
-#		$html.="<script>\n";
-#		$html.="ff_bindAddButton( '".$this->fullId()."' );\n";
-#		for( $i=0; $i<$n; ++$i )
-#		{
-#			$html.="ff_bindRemoveButton( '".$this->fullId()."',$i );\n";
-#		}
-#		$html.="ff['lists']['".$this->fullId()."'] = ".json_encode( array(
-#			"template" => $template,
-#			"next_index" => $n )).";\n";
-#		$html.="</script>\n";
-#		return $html;
-#	}
-#
 	function renderInputRow( $defaults, $i )
 	{
 		global $f3, $template;
@@ -586,25 +369,12 @@ class FloraForm_Field_List extends FloraForm_Field
                 $f3->set('self', $this);
                 return $template->render($this->options["list_template"]);
 
-#		$default = "";
-#		if( !empty($defaults[$this->id]) ){ $default = $defaults[$this->id]; }
-#		$field = clone $this->field;
-#		$field->setId( $i );
-#		$html = "";
-#		$html .= "<li ".$this->renderIDAttr($i."_row")." class='ff_item ".($i%2?"ff_even":"ff_odd")." ".($i?"":"ff_first")."'>";
-#		$html .= "<span class='ff_item_number' ".$this->renderIDAttr($i."_number").">".($i+1)."</span>";
-#		$html .= "<span class='ff_item_remove'><img ".$this->renderIDAttr($i."_remove")." src='".$this->options["resourcesURL"]."/images/delete.png' /></span>";
-#		$html .= "<span class='ff_item_value ".$field->classes( )."'>";
-#		$html .= $field->renderInput( $default );
-#		$html .= "</span>";
-#		$html .= "</li>";
-#		return $html;
 	}
 }
 
 class FloraForm_Field_Submit extends FloraForm_Field
 {
-	var $default_options = array( "template"=>"submit.htm", "layout"=>"block" );
+	var $default_options = array( "template"=>"submit.htm", "layout"=>"block", "surround"=>"field_surround.htm" );
 	
 	function classes()
 	{
@@ -614,7 +384,7 @@ class FloraForm_Field_Submit extends FloraForm_Field
 
 class FloraForm_Field_Hidden extends FloraForm_Field
 {
-	var $default_options =  array("template"=>"hidden.htm");
+	var $default_options =  array("template"=>"hidden.htm", "surround"=>"field_surround.htm");
 	function render( $defaults=array() )
 	{
 		return $this->renderInput( $defaults );
