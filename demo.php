@@ -8,10 +8,6 @@
 	<link rel="stylesheet" href="resources/ff.css" />
 </head>
 <?php
-require_once(__DIR__.'/lib/FloraForm.php');
-ini_set('display_errors',1);
-error_reporting(E_ALL);
-
 class Demo {
 	private $MAIN_TEXT_FIELDS = array( 
 		"topics", "learning_outcomes" ,"introduction", "provisional_notes", "assessment_notes", "timetable_notes"
@@ -389,7 +385,19 @@ class Demo {
 }
 ?>
 <body>
-<?php $demo = new Demo();
+<?php 
+$f3=require(__DIR__.'/lib/base.php');
+
+$f3->set('DEBUG',3);
+$f3->set('UI',__DIR__.'/resources/');
+$f3->set('CACHE',FALSE);
+require_once(__DIR__.'/FloraForm.php');
+ini_set('display_errors',1);
+error_reporting(E_ALL);
+
+
+
+$demo = new Demo();
 echo $demo->renderForm();?>
 </body>
 </html>

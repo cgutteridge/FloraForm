@@ -1,10 +1,6 @@
 <?php
 
-$f3=require(__DIR__.'/base.php');
 
-$f3->set('DEBUG',3);
-$f3->set('UI',__DIR__.'/../resources/');
-$f3->set('CACHE',FALSE);
 $template = new Template;
 class FloraForm extends FloraForm_Section
 {
