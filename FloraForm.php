@@ -15,7 +15,7 @@ class FloraForm extends FloraForm_Section
 		global $f3, $template;
 		$f3->set('form_content', parent::render($defaults));
 		$f3->set('self', $this);
-		return $template->render('form.htm');
+		return $template->render('floraform/form.htm');
 	}
 	
 	function fromForm( &$values, $form_data )
@@ -29,7 +29,7 @@ abstract class FloraForm_Component
 
 	var $id;
 	var $options;
-	var $default_options = array("template"=>"floraform_default.htm", "surround"=>"component_surround.htm");
+	var $default_options = array("template"=>"floraform/floraform_default.htm", "surround"=>"floraform/component_surround.htm");
 	function __construct( $options=array() )
 	{
 		$this->options = array_merge($this->default_options, $options);
@@ -147,7 +147,7 @@ abstract class FloraForm_Component
 
 class FloraForm_Field_Combo extends FloraForm_Component
 {
-	var $default_options = array("template"=>"combo.htm", "surround"=>"component_surround.htm", "heading"=>2);
+	var $default_options = array("template"=>"floraform/combo.htm", "surround"=>"floraform/component_surround.htm", "heading"=>2);
 	var $fields = array();
 
 	function __construct( $options=array() )
@@ -190,7 +190,7 @@ class FloraForm_Field_Combo extends FloraForm_Component
 class FloraForm_Section extends FloraForm_Component
 {
 	var $fields = array();
-	var $default_options = array("template"=>"section.htm", "heading"=>2);
+	var $default_options = array("template"=>"floraform/section.htm", "heading"=>2);
 
 	function __construct( $options=array() )
 	{
@@ -226,7 +226,7 @@ class FloraForm_Section extends FloraForm_Component
 
 abstract class FloraForm_Field extends FloraForm_Component
 {
-	var $default_options = array("template"=>"floraform_default.htm", "surround"=>"field_surround.htm");
+	var $default_options = array("template"=>"floraform/floraform_default.htm", "surround"=>"floraform/field_surround.htm");
 	function fromForm( &$values, $form_data )
 	{
 		global $_POST;
@@ -244,7 +244,7 @@ abstract class FloraForm_Field extends FloraForm_Component
 
 class FloraForm_Field_Text extends FloraForm_Field
 {
-	var $default_options = array("template"=>"text.htm", "surround"=>"field_surround.htm");
+	var $default_options = array("template"=>"floraform/text.htm", "surround"=>"floraform/field_surround.htm");
 	
 	function classes()
 	{
@@ -254,7 +254,7 @@ class FloraForm_Field_Text extends FloraForm_Field
 
 class FloraForm_Field_Textarea extends FloraForm_Field
 {
-	var $default_options = array("template"=>"textarea.htm", "surround"=>"field_surround.htm");
+	var $default_options = array("template"=>"floraform/textarea.htm", "surround"=>"floraform/field_surround.htm");
 	
 	function classes()
 	{
@@ -265,7 +265,7 @@ class FloraForm_Field_Textarea extends FloraForm_Field
 class FloraForm_Field_HTML extends FloraForm_Field
 {
 
-	var $default_options = array("template"=>"htmlarea.htm", "surround"=>"field_surround.htm");
+	var $default_options = array("template"=>"floraform/htmlarea.htm", "surround"=>"floraform/field_surround.htm");
 	
 	function classes()
 	{
@@ -277,7 +277,7 @@ class FloraForm_Field_HTML extends FloraForm_Field
 
 class FloraForm_Field_Choice extends FloraForm_Field
 {
-	var $default_options = array("template"=>"choice.htm", "surround"=>"field_surround.htm");
+	var $default_options = array("template"=>"floraform/choice.htm", "surround"=>"floraform/field_surround.htm");
 	
 	function classes()
 	{
@@ -288,7 +288,7 @@ class FloraForm_Field_Choice extends FloraForm_Field
 class FloraForm_Info extends FloraForm_Component
 {
 	
-	var $default_options = array("surround"=>"component_surround.htm");
+	var $default_options = array("surround"=>"floraform/component_surround.htm");
 	function classes()
 	{
 		return parent::classes()." ff_info";
@@ -304,7 +304,7 @@ class FloraForm_Info extends FloraForm_Component
 class FloraForm_Field_List extends FloraForm_Field
 {
 	var $field;
-	var $default_options = array("template"=>"list.htm", "list_template"=>"list_item.htm", "heading"=>2, "min-items"=>3, "extra-items"=>0, "surround"=>"field_surround.htm");
+	var $default_options = array("template"=>"floraform/list.htm", "list_template"=>"floraform/list_item.htm", "heading"=>2, "min-items"=>3, "extra-items"=>0, "surround"=>"floraform/field_surround.htm");
 	function __construct( $options=array() )
 	{
 		parent::__construct( $options );
@@ -370,7 +370,7 @@ class FloraForm_Field_List extends FloraForm_Field
 
 class FloraForm_Field_Submit extends FloraForm_Field
 {
-	var $default_options = array( "template"=>"submit.htm", "layout"=>"block", "surround"=>"field_surround.htm" );
+	var $default_options = array( "template"=>"floraform/submit.htm", "layout"=>"block", "surround"=>"floraform/field_surround.htm" );
 	
 	function classes()
 	{
@@ -380,7 +380,7 @@ class FloraForm_Field_Submit extends FloraForm_Field
 
 class FloraForm_Field_Hidden extends FloraForm_Field
 {
-	var $default_options =  array("template"=>"hidden.htm", "surround"=>"field_surround.htm");
+	var $default_options =  array("template"=>"floraform/hidden.htm", "surround"=>"floraform/field_surround.htm");
 	function render( $defaults=array() )
 	{
 		return $this->renderInput( $defaults );

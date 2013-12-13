@@ -4,8 +4,8 @@
 	<title>FloraForm Demo</title>
 	<script type="text/javascript" src="http://www.tinymce.com/js/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
 	<script type="text/javascript" src="http://code.jquery.com/jquery-1.8.3.js"></script>
-	<script type="text/javascript" src="resources/ff.js"></script>
-	<link rel="stylesheet" href="resources/ff.css" />
+	<script type="text/javascript" src="html_assets/floraform/ff.js"></script>
+	<link rel="stylesheet" href="html_assets/floraform/ff.css" />
 </head>
 <?php
 class Demo {
@@ -84,7 +84,7 @@ class Demo {
 
 	public function getForm( $flags = array() )
 	{
-		$params =  array( "heading"=>1, "resourcesURL"=>"resources", ); 
+		$params =  array( "heading"=>1, "resourcesURL"=>"html_assets/floraform", ); 
 		$params["action"] = "";
 		$form = new FloraForm($params);
 
@@ -389,7 +389,7 @@ class Demo {
 $f3=require(__DIR__.'/lib/base.php');
 
 $f3->set('DEBUG',3);
-$f3->set('UI',__DIR__.'/resources/');
+$f3->set('UI',__DIR__.'/templates/');
 $f3->set('CACHE',FALSE);
 require_once(__DIR__.'/FloraForm.php');
 ini_set('display_errors',1);
