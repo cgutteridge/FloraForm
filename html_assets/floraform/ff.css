@@ -7,7 +7,7 @@
 .ff_description {
 	margin-bottom: 0.5em;
 }
-textarea {
+.ff_form textarea {
 	display: block;
 	width: 95%;
 }

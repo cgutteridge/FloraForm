@@ -1,4 +1,6 @@
 <form method='POST'<check if='{{isset(@self->options["action"])}}'><true> action='{{@self->options["action"]}}'</true></check>>
+	<div class="ff_form">
 			{{@form_content | raw}}
+	</div>
 </form>
 <script type="text/javascript">ff_init();</script>

@@ -2,27 +2,6 @@
 
 
 $template = new Template;
-class FloraForm extends FloraForm_Section
-{
-
-	function renderTitle()
-	{
-		return "";
-	}
-
-	function render( $defaults=array() )
-	{
-		global $f3, $template;
-		$f3->set('form_content', parent::render($defaults));
-		$f3->set('self', $this);
-		return $template->render('floraform/form.htm');
-	}
-	
-	function fromForm( &$values, $form_data )
-	{
-		parent::fromForm( $values, $form_data );
-	}
-}
 
 abstract class FloraForm_Component
 {
@@ -131,6 +110,7 @@ abstract class FloraForm_Component
 		elseif( $type == "TEXTAREA" ) { $field = new FloraForm_Field_Textarea( $options ); }
 		elseif( $type == "HTML" ) { $field = new FloraForm_Field_HTML( $options ); }
 		elseif( $type == "CHOICE" ) { $field = new FloraForm_Field_Choice( $options ); }
+		elseif( $type == "CONDITIONAL" ) { $field = new FloraForm_Field_Conditional( $options ); }
 		elseif( $type == "SUBMIT" ) { $field = new FloraForm_Field_Submit( $options ); }
 		elseif( $type == "HIDDEN" ) { $field = new FloraForm_Field_Hidden( $options ); }
 		elseif( $type == "LIST" ) { $field = new FloraForm_Field_List( $options ); }
@@ -143,6 +123,81 @@ abstract class FloraForm_Component
 	}
 
 
+}
+
+abstract class FloraForm_Field extends FloraForm_Component
+{
+	var $default_options = array("template"=>"floraform/floraform_default.htm", "surround"=>"floraform/field_surround.htm");
+	function fromForm( &$values, $form_data )
+	{
+		global $_POST;
+		if( $this->id == "" ) { return; }
+		if(array_key_exists($this->fullID(), $form_data)){
+			$values[$this->id] = $form_data[$this->fullID()];
+		}
+	}
+
+	function classes()
+	{
+		return parent::classes()." ff_field";
+	}
+}
+
+class FloraForm_Section extends FloraForm_Component
+{
+	var $fields = array();
+	var $default_options = array("template"=>"floraform/section.htm", "heading"=>2);
+
+	function __construct( $options=array() )
+	{
+		parent::__construct( $options );
+		$this->options["layout"] = "section"; 
+	}
+
+	function render( $defaults=array() )
+	{
+		global $f3, $template;
+
+		$f3->set('self', $this);
+		$f3->set('defaults', $defaults);
+
+		return $template->render($this->options["template"]);
+	}	
+
+	function fromForm( &$values, $form_data )
+	{
+		foreach( $this->fields as $field )
+		{
+			$field->fromForm( $values, $form_data );
+		}
+	}
+
+	function classes()
+	{
+		return parent::classes()." ff_section";
+	}
+}
+
+class FloraForm extends FloraForm_Section
+{
+
+	function renderTitle()
+	{
+		return "";
+	}
+
+	function render( $defaults=array() )
+	{
+		global $f3, $template;
+		$f3->set('form_content', parent::render($defaults));
+		$f3->set('self', $this);
+		return $template->render('floraform/form.htm');
+	}
+	
+	function fromForm( &$values, $form_data )
+	{
+		parent::fromForm( $values, $form_data );
+	}
 }
 
 class FloraForm_Field_Combo extends FloraForm_Component
@@ -187,65 +242,51 @@ class FloraForm_Field_Combo extends FloraForm_Component
 	}
 }
 
-class FloraForm_Section extends FloraForm_Component
+class FloraForm_Info extends FloraForm_Component
 {
-	var $fields = array();
-	var $default_options = array("template"=>"floraform/section.htm", "heading"=>2);
-
-	function __construct( $options=array() )
-	{
-		parent::__construct( $options );
-		$this->options["layout"] = "section"; 
-	}
-
-	function render( $defaults=array() )
-	{
-		global $f3, $template;
-
-		$f3->set('self', $this);
-		$f3->set('defaults', $defaults);
-
-		return $template->render($this->options["template"]);
-	}	
-
-	function fromForm( &$values, $form_data )
-	{
-		foreach( $this->fields as $field )
-		{
-			$field->fromForm( $values, $form_data );
-		}
-	}
-
+	
+	var $default_options = array("surround"=>"floraform/component_surround.htm");
 	function classes()
 	{
-		return parent::classes()." ff_section";
+		return parent::classes()." ff_info";
 	}
-}
-
-
-
-abstract class FloraForm_Field extends FloraForm_Component
-{
-	var $default_options = array("template"=>"floraform/floraform_default.htm", "surround"=>"floraform/field_surround.htm");
-	function fromForm( &$values, $form_data )
+	
+	function renderInput($defaults=array())
 	{
-		global $_POST;
-		if( $this->id == "" ) { return; }
-		if(array_key_exists($this->fullID(), $form_data)){
-			$values[$this->id] = $form_data[$this->fullID()];
-		}
+		return $this->htmlOption("content");
 	}
-
-	function classes()
-	{
-		return parent::classes()." ff_field";
-	}
+		
 }
 
 class FloraForm_Field_Text extends FloraForm_Field
 {
 	var $default_options = array("template"=>"floraform/text.htm", "surround"=>"floraform/field_surround.htm");
 	
+	function classes()
+	{
+		return parent::classes()." ff_text";
+	}
+}
+
+class FloraForm_Field_Conditional extends FloraForm_Field
+{
+	var $default_options = array("template"=>"floraform/conditional.htm", "surround"=>"floraform/field_surround.htm");
+	# this takes a field which is used to determine the conditions
+	# optionally takes a default_condition field which is displayed when the component first renders if no value is set in the box 
+	# also takes an hash of condition -> field. 
+	# conditions are evaluated top to bottom
+	# first condition met breaks the check so most specific conditions should be first
+	# conditions are a regex but confusingly a javascript one...
+
+	function conditionsJson()
+	{
+		$conditions = array();
+		foreach($this->options["conditions"] as $condition)
+		{
+			$conditions[] = array($condition[0], $condition[1], $condition[2]->render());
+		}
+		return json_encode($conditions);
+	}
 	function classes()
 	{
 		return parent::classes()." ff_text";
@@ -283,22 +324,6 @@ class FloraForm_Field_Choice extends FloraForm_Field
 	{
 		return parent::classes()." ff_select";
 	}
-}
-
-class FloraForm_Info extends FloraForm_Component
-{
-	
-	var $default_options = array("surround"=>"floraform/component_surround.htm");
-	function classes()
-	{
-		return parent::classes()." ff_info";
-	}
-	
-	function renderInput($defaults=array())
-	{
-		return $this->htmlOption("content");
-	}
-		
 }
 
 class FloraForm_Field_List extends FloraForm_Field

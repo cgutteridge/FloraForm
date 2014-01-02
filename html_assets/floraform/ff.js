@@ -54,6 +54,28 @@ function ff_addRow( list_id )
 	ff_bindRemoveButton( list_id, new_n );
 }
 
+function ff_conditional(selector, conditions)
+{
+	var data = {"conditions":conditions, "box":selector+"_conditional"};
+	$(selector).change( data, function( e ) {
+		var conditions = e.data.conditions;
+		for(var i=0; i < conditions.length; i++)
+		{
+			condition = conditions[i];
+			if($(e.delegateTarget).val().match(new RegExp(condition[0], condition[1])))
+			{
+				$(e.data.box).slideUp(200, function(){
+					$(e.data.box).html(condition[2]);
+					ff_initWysiwyg();
+					$(e.data.box).slideDown();
+				});
+				break;
+			}
+		}
+	});
+}
+
+
 
 function ff_restyleList( list_id )
 {

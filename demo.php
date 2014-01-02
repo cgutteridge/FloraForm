@@ -337,20 +337,30 @@ class Demo {
 			"mode" => "radio" ) );
 
 		$options = array( "0"=>"No", "1"=>"Yes" );
-		$s4->add( "CHOICE", array( 
+		$fpcchecked = $s4->add( "CHOICE", array( 
 			"id" => "directorchecked",
 			"title" => "The content of this syllabus has been approved by Director of Programmes and/or FPC",
 			"choices" => $options,
 			"layout" => "vertical",
 			"mode" => "radio" ) );
+		$change_summary = new FloraForm_Field_HTML( array(
+			"id" => "changessummarytest",
+			"title" => "4.1 Recent Changes",
+			"description" => "Please use this section to summarise recent changes to the syllabus, and why they were made. If this was in response to student comments, please quote some of them, or link to the questionnaire data.",
+			"layout"=>"section" ));
 
-		$options = array( "0"=>"No", "1"=>"Yes" );
-		$s4->add( "CHOICE", array( 
+		$options = array( ""=>"","0"=>"No", "1"=>"Yes" );
+		$field = $s4->add( "CONDITIONAL", array(
+			"conditions"=> array(
+				array("^0$","", $fpcchecked),
+				array("^1$","", $change_summary)
+			) ) );
+		$field->add("CHOICE", array( 
 			"id" => "reviewchecked",
 			"title" => "The content of this syllabus has been subject to quinquennial review",
 			"choices" => $options,
 			"layout" => "vertical",
-			"mode" => "radio" ) );
+			"mode" => "pull-down" ) );
 
 		$form->add( "HIDDEN", array( 
 			"id" => "syllabusid",
