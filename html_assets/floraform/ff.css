@@ -2,6 +2,7 @@
 	display:block !important;
 }
 .ff_component {
+	display: block;
 }
 .ff_description {
 	margin-bottom: 0.5em;
