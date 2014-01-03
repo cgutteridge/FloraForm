@@ -1,5 +1,5 @@
 {{@self->fields[0]->render()}}
 <div class="condition" id="{{@self->fields[0]->fullId()}}_conditional"></div>
 <script type="text/javascript">
-	ff_conditional("#{{@self->fields[0]->fullId()}}", {{@self->conditionsJson()}});
+	ff_initConditional("#{{@self->fields[0]->fullId()}}", {{@self->conditionsJson()}});
 </script>

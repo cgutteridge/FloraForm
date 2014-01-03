@@ -352,8 +352,8 @@ class Demo {
 		$options = array( ""=>"","0"=>"No", "1"=>"Yes" );
 		$field = $s4->add( "CONDITIONAL", array(
 			"conditions"=> array(
-				array("^0$","", $fpcchecked),
-				array("^1$","", $change_summary)
+				array("^0$", $fpcchecked),
+				array("^1$", $change_summary)
 			) ) );
 		$field->add("CHOICE", array( 
 			"id" => "reviewchecked",
@@ -383,7 +383,6 @@ class Demo {
 	{
 		$data = array();
 		$this->getForm($flags)->fromForm( $data, $_POST );
-		$this->setData($data);
 		return $data;
 	}
 
@@ -408,6 +407,12 @@ error_reporting(E_ALL);
 
 
 $demo = new Demo();
-echo $demo->renderForm();?>
+if(empty($_POST)){
+	echo $demo->renderForm();
+}else{
+	$data = $demo->fromForm( ); 
+	echo "<pre>".print_r($data, true)."<pre>";	
+}
+?>
 </body>
 </html>

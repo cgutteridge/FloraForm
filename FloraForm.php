@@ -5,7 +5,6 @@ $template = new Template;
 
 abstract class FloraForm_Component
 {
-
 	var $id;
 	var $options;
 	var $default_options = array("template"=>"floraform/floraform_default.htm", "surround"=>"floraform/component_surround.htm");
@@ -277,13 +276,31 @@ class FloraForm_Field_Conditional extends FloraForm_Field
 	# conditions are evaluated top to bottom
 	# first condition met breaks the check so most specific conditions should be first
 	# conditions are a regex but confusingly a javascript one...
+	
+	function fromForm( &$values, $form_data )
+	{
+		$this->fields[0]->fromForm( $values, $form_data );
+		$value = $values[$this->fields[0]->fullId()];
+		foreach($this->options["conditions"] as $pattern_field)
+		{
+			$regex = $pattern_field[0];
+			$field = $pattern_field[1];
+
+			$regex = preg_replace('#/#','\/',$regex);
+			if(preg_match("/$regex/i", $value))
+			{
+				$field->fromForm( $values, $form_data);
+				break;
+			}
+		}
+	}
 
 	function conditionsJson()
 	{
 		$conditions = array();
 		foreach($this->options["conditions"] as $condition)
 		{
-			$conditions[] = array($condition[0], $condition[1], $condition[2]->render());
+			$conditions[] = array($condition[0], $condition[1]->render());
 		}
 		return json_encode($conditions);
 	}

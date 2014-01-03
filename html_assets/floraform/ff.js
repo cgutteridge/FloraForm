@@ -54,26 +54,32 @@ function ff_addRow( list_id )
 	ff_bindRemoveButton( list_id, new_n );
 }
 
-function ff_conditional(selector, conditions)
+function ff_initConditional(selector, conditions)
 {
-	var data = {"conditions":conditions, "box":selector+"_conditional"};
-	$(selector).change( data, function( e ) {
-		var conditions = e.data.conditions;
-		for(var i=0; i < conditions.length; i++)
-		{
-			condition = conditions[i];
-			if($(e.delegateTarget).val().match(new RegExp(condition[0], condition[1])))
-			{
-				$(e.data.box).slideUp(200, function(){
-					$(e.data.box).html(condition[2]);
-					ff_initWysiwyg();
-					$(e.data.box).slideDown();
-				});
-				break;
-			}
-		}
-	});
+	var data = {"conditions":conditions, "selector":selector, "box":selector+"_conditional"};
+	$(selector).change( data, ff_checkConditional );
+	var e = {data:data};
+	ff_checkConditional( e );
 }
+
+function ff_checkConditional( e ) {
+	var conditions = e.data.conditions;
+	for(var i=0; i < conditions.length; i++)
+	{
+		condition = conditions[i];
+		//the regex is always case insensitive (not sure if this is wrong or write but its easier for the user)
+		if($(e.data.selector).val().match(new RegExp(condition[0], "i")))
+		{
+			$(e.data.box).slideUp(200, function(){
+				$(e.data.box).html(condition[1]);
+				ff_initWysiwyg();
+				$(e.data.box).slideDown();
+			});
+			break;
+		}
+	}
+};
+
 
 
 
