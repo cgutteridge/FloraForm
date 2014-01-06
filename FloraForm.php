@@ -7,6 +7,7 @@ abstract class FloraForm_Component
 {
 	var $id;
 	var $options;
+	var $fields = array();
 	var $default_options = array("template"=>"floraform/floraform_default.htm", "surround"=>"floraform/component_surround.htm");
 	function __construct( $options=array() )
 	{
@@ -15,15 +16,43 @@ abstract class FloraForm_Component
 		{
 			$this->id = $options["id"];
 		}
+		if(!empty($options["fields"]))
+		{
+			$this->processConfig($options["fields"]);
+			#unset($options["fields"]);
+			#unset($this->options["fields"]);
+		}
+	}
+
+	function processConfig( &$config )
+	{
+		foreach ( $config as $field_def )
+		{
+			foreach($field_def as $field_type => $options)
+			{
+				$this->add($field_type, $options);
+			}
+		}
 	}
 
 	function setId( $new_id )
 	{
 		$this->id = $new_id;
 	}
+
 	function setIdPrefix( $new_id_prefix )
 	{
 		$this->options["id-prefix"] = $new_id_prefix;
+	}
+
+	function fullId($suffix=null)
+	{
+		if( !isset($this->id) ) { return ""; }
+		$id = "";
+		if( !empty($this->options["id-prefix"]) ) { $id .= $this->options["id-prefix"]."_"; }
+		$id .= $this->id;
+		if( isset( $suffix ) ){ $id .= "_$suffix"; }
+		return $id;
 	}
 
 	function fromForm( &$values, $form_data )
@@ -62,14 +91,17 @@ abstract class FloraForm_Component
 		if( $this->hasOption( $opt_key."_html" ) ) { return $this->options[$opt_key."_html"]; }
 		if( $this->hasOption( $opt_key ) ) { return htmlentities($this->options[$opt_key]); }
 	}	
+
 	function hasHtmlOption( $opt_key )
 	{
 		return array_key_exists( $opt_key."_html", $this->options ) || array_key_exists( $opt_key, $this->options );
 	}	
+
 	function option( $opt_key )
 	{
 		if( $this->hasOption( $opt_key ) ) { return $this->options[$opt_key]; }
-	}	
+	}
+	
 	function hasOption( $opt_key )
 	{
 		return array_key_exists( $opt_key, $this->options );
@@ -91,16 +123,6 @@ abstract class FloraForm_Component
 		return "ff_component";
 	}
 	
-	function fullId($suffix=null)
-	{
-		if( !isset($this->id) ) { return ""; }
-		$id = "";
-		if( !empty($this->options["id-prefix"]) ) { $id .= $this->options["id-prefix"]."_"; }
-		$id .= $this->id;
-		if( isset( $suffix ) ){ $id .= "_$suffix"; }
-		return $id;
-	}
-
 	function error( $msg )
 	{
 		print "<h1>FloraForm has encountered an error: ".htmlentities( $msg )."</h1>";
@@ -148,7 +170,6 @@ abstract class FloraForm_Field extends FloraForm_Component
 
 class FloraForm_Section extends FloraForm_Component
 {
-	var $fields = array();
 	var $default_options = array("template"=>"floraform/section.htm", "heading"=>2);
 
 	function __construct( $options=array() )
