@@ -54,13 +54,17 @@ abstract class FloraForm_Component
 	function renderTitle()
 	{
 		if( !array_key_exists( "title",$this->options ) ) { return ""; }
-		return htmlspecialchars( $this->options["title"] );
+		return htmlentities( $this->options["title"] );
 	}
 
 	function htmlOption( $opt_key )
 	{
 		if( $this->hasOption( $opt_key."_html" ) ) { return $this->options[$opt_key."_html"]; }
-		if( $this->hasOption( $opt_key ) ) { return htmlspecialchars($this->options[$opt_key]); }
+		if( $this->hasOption( $opt_key ) ) { return htmlentities($this->options[$opt_key]); }
+	}	
+	function hasHtmlOption( $opt_key )
+	{
+		return array_key_exists( $opt_key."_html", $this->options ) || array_key_exists( $opt_key, $this->options );
 	}	
 	function option( $opt_key )
 	{
@@ -99,7 +103,7 @@ abstract class FloraForm_Component
 
 	function error( $msg )
 	{
-		print "<h1>FloraForm has encountered an error: ".htmlspecialchars( $msg )."</h1>";
+		print "<h1>FloraForm has encountered an error: ".htmlentities( $msg )."</h1>";
 		exit;
 	}
 
@@ -193,10 +197,6 @@ class FloraForm extends FloraForm_Section
 		return $template->render('floraform/form.htm');
 	}
 	
-	function fromForm( &$values, $form_data )
-	{
-		parent::fromForm( $values, $form_data );
-	}
 }
 
 class FloraForm_Field_Combo extends FloraForm_Component
@@ -270,12 +270,6 @@ class FloraForm_Field_Text extends FloraForm_Field
 class FloraForm_Field_Conditional extends FloraForm_Field
 {
 	var $default_options = array("template"=>"floraform/conditional.htm", "surround"=>"floraform/field_surround.htm");
-	# this takes a field which is used to determine the conditions
-	# optionally takes a default_condition field which is displayed when the component first renders if no value is set in the box 
-	# also takes an hash of condition -> field. 
-	# conditions are evaluated top to bottom
-	# first condition met breaks the check so most specific conditions should be first
-	# conditions are a regex but confusingly a javascript one...
 	
 	function fromForm( &$values, $form_data )
 	{

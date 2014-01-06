@@ -319,8 +319,8 @@ class Demo {
 			"layout"=>"section" ));
 		$s4->add( "SECTION", array(
 			"title" => "4.2 Nature of Edit",
-			"description" => "
-	Changes which are significant need to be reviewed by the director of programmes and/or FPC. In addition, each syllabus should be peer reviewed once every five years (at least).   If you have made a significant change to syllabus content, please set the approval flag to No.  If you have changed the list of textbooks, please set the library flag to No.
+			"description_html" => "
+	Changes which are significant &lt;b&gt;need&lt;/b&gt; to be reviewed by the <b>director of programmes and/or FPC</b>. In addition, each syllabus should be peer reviewed once every five years (at least).   If you have made a significant change to syllabus content, please set the approval flag to No.  If you have changed the list of textbooks, please set the library flag to No.
 	",
 			));
 

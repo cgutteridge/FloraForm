@@ -1,4 +1,4 @@
-<form method='POST'<check if='{{isset(@self->options["action"])}}'><true> action='{{@self->options["action"]}}'</true></check>>
+<form method='POST'<check if='{{@self->hasOption("action")}}'><true> action='{{@self->option("action")}}'</true></check>>
 	<div class="ff_form">
 			{{@form_content | raw}}
 	</div>

@@ -7,11 +7,11 @@
 		{{@self->renderInputRow( @defaults, @i )}}
 	</repeat>
 </ul>
-<span class='ff_item_add' id="{{@self->fullId('add')}}"><img src='{{@self->options["resourcesURL"]}}/images/add.png' /> More</span>
+<span class='ff_item_add' id="{{@self->fullId('add')}}"><img src='{{@self->option("resourcesURL")}}/images/add.png' /> More</span>
 <script type="text/javascript">
 	ff_bindAddButton( '{{@self->fullId()}}' );
 <repeat group="{{range( 0, @n-1 )}}" value="{{@i}}">
-	ff_bindRemoveButton( '{{@self->fullId()}}',{{@i}} );
+	ff_bindRemoveButton( '{{@self->fullId() | raw}}',{{@i}} );
 </repeat>
 ff['lists']['{{@self->fullId()}}'] = {{json_encode( array(
 	"template" => @self->renderInputRow( @defaults, "ROW_ID" ),

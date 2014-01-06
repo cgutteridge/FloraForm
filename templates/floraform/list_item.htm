@@ -1,6 +1,6 @@
 <li id="{{@self->fullId(@i.'_row')}}" class='ff_item {{@i%2?"ff_even":"ff_odd"}} {{@i?"":"ff_first"}}'>
 	<span class='ff_item_number' id='{{@self->fullId(@i."_number")}}'>{{@i+1}}</span>
-	<span class='ff_item_remove'><img id="{{@self->fullId(@i.'_remove')}}" src="{{@self->options['resourcesURL']}}/images/delete.png" /></span>
+	<span class='ff_item_remove'><img id="{{@self->fullId(@i.'_remove')}}" src="{{@self->option('resourcesURL')}}/images/delete.png" /></span>
 	{{ ""; @field = clone @self->field}}
 	{{ ""; @field->setId( @i )}}
 	<span class='ff_item_value {{@field->classes( )}}'>{{@field->renderInput( @default ) | raw }}</span>

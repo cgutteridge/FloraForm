@@ -1,5 +1,5 @@
 <textarea name="{{ @self->fullId() }}" id="{{@self->fullId()}}" class="ff_input_html"
-<check if="{{@self->hasOption( 'rows' )}}"><true> rows="{{@self->options['rows']}}"</true></check>
-<check if="{{@self->hasOption( 'cols' )}}"><true> cols="{{@self->options['cols']}}"</true></check>
+<check if="{{@self->hasOption( 'rows' )}}"><true> rows="{{@self->option('rows')}}"</true></check>
+<check if="{{@self->hasOption( 'cols' )}}"><true> cols="{{@self->option('cols')}}"</true></check>
 style="width:100%">{{@default}}</textarea>
 <exclude><script type="text/javascript">ff_initWysiwyg( '{{@self->fullID()}}' );</script></exclude>

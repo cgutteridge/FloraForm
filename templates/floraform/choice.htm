@@ -1,4 +1,4 @@
-<check if="{{@self->options['mode'] == 'pull-down'}}">
+<check if="{{@self->option('mode') == 'pull-down'}}">
 	<true>
 		<select name="{{@self->fullId()}}" id="{{@self->fullId()}}" class=''>
 			<repeat group="{{ @self->option('choices') }}" key="{{ @code }}" value="{{ @value }}">
