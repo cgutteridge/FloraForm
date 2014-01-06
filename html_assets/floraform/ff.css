@@ -49,23 +49,6 @@
 	padding-right: 10px;
 }
 
-
-
-/*
-#assessment_container .ff_combo { padding-left: 0px; }
-#assessment_container .ff_combo .ff_field { display: block; }
-#assessment_container .ff_item_value { display: inline-block; }
-#assessment_container .ff_item .ff_title { width: 100px; text-align: right; }
-#assessment_container .ff_item .ff_field input { width: 30em; }
-#assessment_container .ff_item .ff_select .ff_radio_option input { width: auto; }
-
-#resources_container h3 { display: none; }
-#resources_container .ff_combo { padding-left: 0px; }
-#resources_container .ff_combo .ff_field { display: block; padding-left: 0px;}
-#resources_container .ff_item_value { display: inline-block; }
-*/
-
-
 /* Lists */
 
 .ff_list .ff_item_number {
@@ -143,12 +126,11 @@
 
 
 /* horizontal field */
-
+/*
 .ff_horizontal {
 	display: block;
 }
 
-/* vertical combo */
 
 .ff_combo_vertical .ff_component {
 	display: block;
@@ -160,6 +142,7 @@
 .ff_combo_vertical .ff_component .ff_input_text {
 	width: 70%;
 }
+*/
 
 .ff_input_submit {
     background-color: #EEEEFF;
