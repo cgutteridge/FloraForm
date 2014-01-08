@@ -1,6 +1,6 @@
-{{ ""; @n = sizeof( @default ) + @self->option( "extra-items" ) }} 
+<set n="{{sizeof( @default ) + @self->option( 'extra-items' )}}" /> 
 <check if="{{@n < @self->option( 'min-items' )}}">
-	{{ ""; @n = @self->option( "min-items" ) }}
+	<set n="{{@self->option( 'min-items' )}}"/>
 </check>
 <ul id="{{@self->fullId('list')}}">
 	<repeat group="{{range( 0, @n-1 )}}" value="{{@i}}">
@@ -11,7 +11,7 @@
 <script type="text/javascript">
 	ff_bindAddButton( '{{@self->fullId()}}' );
 <repeat group="{{range( 0, @n-1 )}}" value="{{@i}}">
-	ff_bindRemoveButton( '{{@self->fullId() | raw}}',{{@i}} );
+	ff_bindRemoveButton( '{{@self->fullId()}}',{{@i}} );
 </repeat>
 ff['lists']['{{@self->fullId()}}'] = {{json_encode( array(
 	"template" => @self->renderInputRow( @defaults, "ROW_ID" ),

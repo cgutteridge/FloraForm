@@ -205,11 +205,6 @@ class FloraForm_Section extends FloraForm_Component
 class FloraForm extends FloraForm_Section
 {
 
-	function renderTitle()
-	{
-		return "";
-	}
-
 	function render( $defaults=array() )
 	{
 		global $f3, $template;
@@ -338,7 +333,7 @@ class FloraForm_Field_Textarea extends FloraForm_Field
 class FloraForm_Field_HTML extends FloraForm_Field
 {
 
-	var $default_options = array("template"=>"floraform/htmlarea.htm", "surround"=>"floraform/field_surround.htm");
+	var $default_options = array("template"=>"floraform/htmlarea.htm", "surround"=>"floraform/component_surround.htm");
 	
 	function classes()
 	{

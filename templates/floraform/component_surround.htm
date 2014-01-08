@@ -1,4 +1,13 @@
 <span id="{{@self->fullId()}}_container" class='{{@self->classes()}} ff_{{@self->option("layout")}}'>
-	<check if="{{@self->renderTitle()}}"><true><span id="{{@self->fullId('title')}}" class='ff_title'>{{@self->renderTitle()}}: </span></true></check>
+	<check if="{{@self->hasHtmlOption('title')}}">
+		<h{{@self->option("heading")}} id="{{@self->fullId('title')}}" class='ff_title'>
+			{{@self->htmlOption("title")}} 
+		</h{{@self->option("heading");}}>
+	</check>
+	<check if="{{@self->hasHtmlOption('description')}}">
+		<div id="{{@self->fullId('description')}}" class='ff_description'>
+			{{@self->htmlOption("description")}} 
+		</div>
+	</check>
 	{{@self->renderInput( @defaults )}}
 </span>
