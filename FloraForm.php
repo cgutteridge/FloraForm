@@ -356,7 +356,7 @@ class FloraForm_Field_Choice extends FloraForm_Field
 class FloraForm_Field_List extends FloraForm_Field
 {
 	var $field;
-	var $default_options = array("template"=>"floraform/list.htm", "list_template"=>"floraform/list_item.htm", "heading"=>2, "min-items"=>3, "extra-items"=>0, "surround"=>"floraform/field_surround.htm");
+	var $default_options = array("template"=>"floraform/list.htm", "list_template"=>"floraform/list_item.htm", "heading"=>2, "min-items"=>3, "extra-items"=>0, "surround"=>"floraform/component_surround.htm");
 	function __construct( $options=array() )
 	{
 		parent::__construct( $options );
