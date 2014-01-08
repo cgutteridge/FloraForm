@@ -303,6 +303,7 @@ class Demo {
 			"title" => "ISBN" ) );	
 		$res_combo->add( "HTML", array(
 			"id" => "details",
+			"surround" => "floraform/field_surround.htm",
 			"rows" => 2,
 			"layout" => "block",
 			"title" => "Details" ) );	
