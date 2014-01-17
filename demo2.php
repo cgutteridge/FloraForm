@@ -95,88 +95,234 @@ class Demo {
 				array( 
 					"title" => "Provisional Module Description",
 					"fields" => 
-					array(
-						array( "INFO" => array( 
-								"content_html" => "<p>This syllabus description has not yet been formally linked with a code and session.</p>" 
-							)
-						),
-						array( "TEXT" => 
-							array( 
-								"id"=>"provisionaltitle",
-								"title"=>"Provisional Module Title",
-								"layout"=>"vertical"
-							)	
-						),
-						array( "TEXT" => 
-							array( 
-								"id"=>"provisionalcode",
-								"title"=>"Provisional Module Code",
-								"layout"=>"vertical"
-							)
-						),
-						array( "CHOICE" => 
-							array( 
-								"id"=>"provisionalsession",
-								"title"=>"Provisional Session",
-								"mode"=>"pull-down",
-								"choices"=>
-									array( 
-										"" => "Select...",
-										"1213" => "2012-2013",
-										"1314" => "2013-2014",
-										"1415" => "2014-2015",
-										"1516" => "2015-2016",
-										"1617" => "2016-2017", 
-									)
-							)
-						),
-						array( "TEXT" =>
-							array( 
-								"id"=>"provisionalsemester",
-								"title"=>"Provisional Semester",
-								"layout"=>"vertical"
-							)
-						),
-						array( "HTML" => 
-							array( 
-								"id"=>"provisionalnotes",
-								"title"=>"Provisional Notes",
+						array(
+							array( "INFO" => 
+								array( 
+									"content_html" => "<p>This syllabus description has not yet been formally linked with a code and session.</p>" 
+								)
+							),
+							array( "TEXT" => 
+								array( 
+									"id"=>"provisionaltitle",
+									"title"=>"Provisional Module Title",
+									"layout"=>"vertical"
+								)	
+							),
+							array( "TEXT" => 
+								array( 
+									"id"=>"provisionalcode",
+									"title"=>"Provisional Module Code",
+									"layout"=>"vertical"
+								)
+							),
+							array( "CHOICE" => 
+								array( 
+									"id"=>"provisionalsession",
+									"title"=>"Provisional Session",
+									"mode"=>"pull-down",
+									"choices"=>
+										array( 
+											"" => "Select...",
+											"1213" => "2012-2013",
+											"1314" => "2013-2014",
+											"1415" => "2014-2015",
+											"1516" => "2015-2016",
+											"1617" => "2016-2017", 
+										)
+								)
+							),
+							array( "TEXT" =>
+								array( 
+									"id"=>"provisionalsemester",
+									"title"=>"Provisional Semester",
+									"layout"=>"vertical"
+								)
+							),
+							array( "HTML" => 
+								array( 
+									"id"=>"provisionalnotes",
+									"title"=>"Provisional Notes",
+								)
 							)
 						)
-					)
 				)
 			),
 			array( "SECTION" => 
 				array(
 					"title" => "1. Description",
 					"fields" => 
-					array(
-						array( "HTML" => 
-							array( 
-								"id" => "introduction", # TODO change field name
-								"title" => "1.1 Introduction",
-								"rows" => 10,
-								"description" => "This section should be used to give a summary of the syllabus, its aims, and (for core / compulsory syllabuss) how it fits in with the programme as a whole or (for optional syllabuss) why students might choose to take it. You can also give a general indication of pre-requisite knowledge and skills which are assumed."
-							)
-						),
-						array( "HTML" => 
-							array( 
-								"id" => "learningoutcomes", # TODO change field name
-								"title" => "1.2 Learning Outcomes",
-								"rows" => 10,
-								"description" => "This section should be used to list the intended learning outcomes of the syllabus. You can refer to <a href='http://www.opendatacompetition.soton.ac.uk/newsite/'>guidance in the quality handbook</a> for advice on these. For a standard 15 credit syllabus, 5 to 8 outcomes should be sufficient. Please do not repeat the list of topics for the syllabus, which are given in the following section.",
-							)
-						),
-						array( "HTML" => 
-							array( 
-								"id" => "topics", # TODO change field name
-								"rows" => 10,
-								"title" => "1.3 Topics",
-								"description" => "A summary of contents covered, perhaps 10 to 20 bullet points." 
+						array(
+							array( "HTML" => 
+								array( 
+									"id" => "introduction", # TODO change field name
+									"title" => "1.1 Introduction",
+									"rows" => 10,
+									"description" => "This section should be used to give a summary of the syllabus, its aims, and (for core / compulsory syllabuss) how it fits in with the programme as a whole or (for optional syllabuss) why students might choose to take it. You can also give a general indication of pre-requisite knowledge and skills which are assumed."
+								)
+							),
+							array( "HTML" => 
+								array( 
+									"id" => "learningoutcomes", # TODO change field name
+									"title" => "1.2 Learning Outcomes",
+									"rows" => 10,
+									"description" => "This section should be used to list the intended learning outcomes of the syllabus. You can refer to <a href='http://www.opendatacompetition.soton.ac.uk/newsite/'>guidance in the quality handbook</a> for advice on these. For a standard 15 credit syllabus, 5 to 8 outcomes should be sufficient. Please do not repeat the list of topics for the syllabus, which are given in the following section.",
+								)
+							),
+							array( "HTML" => 
+								array( 
+									"id" => "topics", # TODO change field name
+									"rows" => 10,
+									"title" => "1.3 Topics",
+									"description" => "A summary of contents covered, perhaps 10 to 20 bullet points." 
 
+								)
 							)
 						)
-					)
+				)
+			),
+			array( "SECTION" => 
+				array(
+					"title" => "2. Basic Information",
+					"fields" =>
+						array(
+							array( "LIST" => 
+								array( 
+									"id" => "regularteaching",
+									"layout" => "section",
+									"title" => "2.1 Scheduled Teaching Activities",
+									"description" => "This section allows you to provide data for timetabling purposes and key information sets. For each scheduled activity, please indicate the nature of the activity, its duration, and its frequency (ie the number of sessions).  If the class divides into groups for this activity, please give the (maximum) group size; in this case, the frequency should be given from the student perspective. Otherwise, leave this field blank. ",
+									"fields"=>
+										array(
+											array( "COMBO"=> 
+												array(
+													"fields"=>
+														array(
+															array( "CHOICE" => 
+																array(
+																	"id" => "activitytype",
+																	"title" => "Type",
+																	"choices" => $this->SA_TYPES,
+																	"mode" => "pull-down" 
+																) 
+															),
+															array( "CHOICE" => 
+																array(
+																	"id" => "duration",
+																	"title" => "Duration",
+																	"choices" => $this->SA_DURATIONS,
+																	"mode" => "pull-down" 
+																) 
+															),
+															array( "CHOICE" => 
+																array(
+																	"id" => "frequency",
+																	"title" => "Frequency",
+																	"choices" => $this->SA_FREQUENCIES,
+																	"mode" => "pull-down" 
+																) 
+															),
+															array( "TEXT" => 
+																array( 
+																	"id" => "groupsize",
+																	"size" => 2,
+																	"title" => "Group Size" 
+																)
+															)
+														)
+													)
+											)
+										)
+								) 
+							),
+							array( "LIST" => 
+								array( 
+									"id" => "assessment",
+									"layout" => "section",
+									"title" => "2.2 Summative Assessment",
+									"description" => "This section allows you to provide data for student workload monitoring, and key information sets. Note that the total percentages across all assessment activities should add up to 100. For an exam, give the planned duration. For other assessment activities, please indicate the week or weeks of the semester when they are planned to occur, where week 1 is the start of teaching, and week 12 is the last week before exams, which is typically reserved for revision. Note that assignment deadlines should therefore not occur during weeks 12 to 15.  Finally, indicate when and how you will provide feedback on assignments -- for example, you might state that <i>after 2 weeks individual feedback sheets will be returned, and a generic feedback will be provided in-class.</i>",
+									"fields" => 
+										array(
+											array( "COMBO" =>
+												array( 
+													"fields" => 
+														array(
+															array( "TEXT" => 
+																array(
+																	"id" => "description",
+																	"layout" => "vertical",
+																	"title" => "Description" 
+																)
+															),
+															array( "TEXT" => 
+																array(
+																	"id" => "frequency",
+																	"size" => 3,
+																	"layout" => "vertical2up",
+																	"title" => "Frequency" 
+																)
+															),
+															array( "TEXT" =>
+																array(
+																	"id" => "percent",
+																	"layout" => "vertical2up",
+																	"size" => 3,
+																	"suffix" => "%",
+																	"title" => "Total Percentage" 
+																)
+															),
+															array( "CHOICE" => 
+																array(
+																	"id" => "type",
+																	"layout" => "vertical",
+																	"title" => "Type",
+																	"choices" => $this->ASSESSMENT_TYPES,
+																	"lots-of-class" => true,
+																	"mode" => "radio" 
+																) 
+															),
+															array( "INFO" => 
+																array(
+																	"layout" => "vertical2up",
+																	"content_html" => "<div style='text-align:center'>If exam, give duration</div>" 
+																)
+															),
+															array( "INFO" => 
+																array(
+																	"layout" => "vertical2up",
+																	"content_html" => "<div style='text-align:center'>Otherwise give week No(s)</div>" 
+																)
+															),
+															array( "TEXT" => 
+																array(
+																	"id" => "examduration",
+																	"layout" => "vertical2up",
+																	"size" => 3,
+																	"suffix"=>" hours",
+																	"title" => "Exam Duration" 
+																)
+															),
+															array( "TEXT" => 
+																array(
+																	"id" => "weeknos",
+																	"layout" => "vertical2up",
+																	"title" => "Week no(s)" 
+																)
+															),
+															array( "TEXTAREA" => 
+																array(
+																	"id" => "feedback",
+																	"rows" => "3",
+																	"layout" => "block",
+																	"title" => "Feedback" 
+																)
+															)
+														)
+												)
+											)
+										)
+								) 
+							)
+						)
 				)
 			)
 		);
@@ -184,95 +330,7 @@ class Demo {
 		$form->processConfig($config);
 		return $form;
 	}
-	/*
-		### Assessment
-
-		$s1 = $form->add( "SECTION", array(
-			"title" => "2. Basic Information",
-			));
-
-		$reg_combo = $s1->add( "LIST", array( 
-			"id" => "regularteaching",
-			"layout" => "section",
-			"title" => "2.1 Scheduled Teaching Activities",
-			"description" => "This section allows you to provide data for timetabling purposes and key information sets. For each scheduled activity, please indicate the nature of the activity, its duration, and its frequency (ie the number of sessions).  If the class divides into groups for this activity, please give the (maximum) group size; in this case, the frequency should be given from the student perspective. Otherwise, leave this field blank. ") )->setListType( "COMBO" );
-		$reg_combo->add( "CHOICE", array(
-			"id" => "activitytype",
-			"title" => "Type",
-			"choices" => $this->SA_TYPES,
-			"mode" => "pull-down" ) );
-		$reg_combo->add( "CHOICE", array(
-			"id" => "duration",
-			"title" => "Duration",
-			"choices" => $this->SA_DURATIONS,
-			"mode" => "pull-down" ) );
-		$reg_combo->add( "CHOICE", array(
-			"id" => "frequency",
-			"title" => "Frequency",
-			"choices" => $this->SA_FREQUENCIES,
-			"mode" => "pull-down" ) );
-		$reg_combo->add( "TEXT", array( 
-			"id" => "groupsize",
-			"size" => 2,
-			"title" => "Group Size" ));
-
-		$ass_combo = $s1->add( "LIST", array( 
-			"id" => "assessment",
-			"layout" => "section",
-			"title" => "2.2 Summative Assessment",
-			"description" => "
-	This section allows you to provide data for student workload monitoring, and key information sets. Note that the total percentages across all assessment activities should add up to 100. For an exam, give the planned duration. For other assessment activities, please indicate the week or weeks of the semester when they are planned to occur, where week 1 is the start of teaching, and week 12 is the last week before exams, which is typically reserved for revision. Note that assignment deadlines should therefore not occur during weeks 12 to 15.  Finally, indicate when and how you will provide feedback on assignments -- for example, you might state that <i>after 2 weeks individual feedback sheets will be returned, and a generic feedback will be provided in-class.</i>
-	" ) )->setListType( "COMBO", array( "layout" ));
-		
-
-		$ass_combo->add( "TEXT", array(
-			"id" => "description",
-			"layout" => "vertical",
-			"title" => "Description" ));
-		$ass_combo->add( "TEXT", array(
-			"id" => "frequency",
-			"size" => 3,
-			"layout" => "vertical2up",
-			"title" => "Frequency" ));
-		$ass_combo->add( "TEXT", array(
-			"id" => "percent",
-			"layout" => "vertical2up",
-			"size" => 3,
-			"suffix" => "%",
-			"title" => "Total Percentage" ));
-		$ass_combo->add( "CHOICE", array(
-			"id" => "type",
-			"layout" => "vertical",
-			"title" => "Type",
-			"choices" => $this->ASSESSMENT_TYPES,
-			"lots-of-class" => true,
-			"mode" => "radio" ) );
-	#		$ass_combo->add( "TEXT", array(
-	#			"id" => "notes",
-	#			"title" => "Notes" ));
-
-		$ass_combo->add( "INFO", array(
-			"layout" => "vertical2up",
-			"content_html" => "<div style='text-align:center'>If exam, give duration</div>" ));
-		$ass_combo->add( "INFO", array(
-			"layout" => "vertical2up",
-			"content_html" => "<div style='text-align:center'>Otherwise give week No(s)</div>" ));
-
-		$ass_combo->add( "TEXT", array(
-			"id" => "examduration",
-			"layout" => "vertical2up",
-			"size" => 3,
-			"suffix"=>" hours",
-			"title" => "Exam Duration" ));
-		$ass_combo->add( "TEXT", array(
-			"id" => "weeknos",
-			"layout" => "vertical2up",
-			"title" => "Week no(s)" ));
-		$ass_combo->add( "TEXTAREA", array(
-			"id" => "feedback",
-			"rows" => "3",
-			"layout" => "block",
-			"title" => "Feedback" ));
+/*
 
 		$s1->add( "CHOICE", array( 
 			"id" => "referral",

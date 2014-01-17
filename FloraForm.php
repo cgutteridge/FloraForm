@@ -142,7 +142,7 @@ abstract class FloraForm_Component
 		elseif( $type == "COMBO" ) { $field = new FloraForm_Field_Combo( $options ); }
 		elseif( $type == "INFO" ) { $field = new FloraForm_Info( $options ); }
 		elseif( $type == "SECTION" ) { $field = new FloraForm_Section( $options ); }
-		else { $this->error( "bad field type: $type" ); return; }
+		else { $this->error( "bad field type: $type <br />options: <pre>".print_r($options, true)."</pre>" ); return; }
 
 		return $field;
 	}
@@ -357,24 +357,24 @@ class FloraForm_Field_List extends FloraForm_Field
 {
 	var $field;
 	var $default_options = array("template"=>"floraform/list.htm", "list_template"=>"floraform/list_item.htm", "heading"=>2, "min-items"=>3, "extra-items"=>0, "surround"=>"floraform/component_surround.htm");
-	function __construct( $options=array() )
-	{
-		parent::__construct( $options );
-	}
 
 	function classes()
 	{
 		return parent::classes()." ff_list";
 	}
 
-	function setListType( $type, $options=array() )
+	function add( $type, $options=array() )
 	{
 		$options["id-prefix"] = $this->fullId();
-		$options["heading"] = $this->option("heading");
-		$options["resourcesURL"] = $this->option("resourcesURL");
+		$this->field = parent::add($type, $options);
 
-		$this->field = $this->factory( $type, $options );
 		return $this->field;
+	}
+	
+	function setListType( $type, $options=array() )
+	{
+		#this should probably be removed from the documentation
+		return $this->add( $type, $options);
 	}
 
 	function fromForm( &$values, $form_data )
