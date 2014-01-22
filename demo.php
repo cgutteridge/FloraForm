@@ -337,6 +337,9 @@ class Demo {
 			"layout" => "vertical",
 			"mode" => "radio" ) );
 
+		$s4->add( "FILE", array( 
+			"id" => "suplementalfile",
+			"title" => "Suplemental file" ) );
 		$options = array( "0"=>"No", "1"=>"Yes" );
 		$fpcchecked = $s4->add( "CHOICE", array( 
 			"id" => "directorchecked",

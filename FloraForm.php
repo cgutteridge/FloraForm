@@ -135,6 +135,7 @@ abstract class FloraForm_Component
 		elseif( $type == "TEXTAREA" ) { $field = new FloraForm_Field_Textarea( $options ); }
 		elseif( $type == "HTML" ) { $field = new FloraForm_Field_HTML( $options ); }
 		elseif( $type == "CHOICE" ) { $field = new FloraForm_Field_Choice( $options ); }
+		elseif( $type == "FILE" ) { $field = new FloraForm_Field_File( $options ); }
 		elseif( $type == "CONDITIONAL" ) { $field = new FloraForm_Field_Conditional( $options ); }
 		elseif( $type == "SUBMIT" ) { $field = new FloraForm_Field_Submit( $options ); }
 		elseif( $type == "HIDDEN" ) { $field = new FloraForm_Field_Hidden( $options ); }
@@ -327,6 +328,28 @@ class FloraForm_Field_Textarea extends FloraForm_Field
 	function classes()
 	{
 		return parent::classes()." ff_textarea";
+	}
+}
+
+class FloraForm_Field_File extends FloraForm_Field
+{
+	var $default_options = array("template"=>"floraform/file.htm", "surround"=>"floraform/field_surround.htm");
+	
+	function classes()
+	{
+		return parent::classes()." ff_textarea";
+	}
+
+	function fromForm( &$values, $form_data )
+	{
+		global $_FILES;
+			
+		if( $this->id == "" ) { return; }
+		if ($_FILES[$this->fullId()]["error"] > 0){ return; }
+
+		if(array_key_exists($this->fullID(), $_FILES)){
+			$values[$this->id] = $_FILES[$this->fullID()];
+		}
 	}
 }
 

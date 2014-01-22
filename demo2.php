@@ -176,6 +176,12 @@ class Demo {
 									"description" => "A summary of contents covered, perhaps 10 to 20 bullet points." 
 
 								)
+							),
+							array( "FILE" => 
+								array(
+									"id"=>"suplementalfile",
+									"title"=> "Supplemental Information"
+								)
 							)
 						)
 				)
