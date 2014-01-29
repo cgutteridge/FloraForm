@@ -3,14 +3,14 @@
 	<set n="{{@self->option( 'min-items' )}}"/>
 </check>
 <ul id="{{@self->fullId('list')}}">
-	<repeat group="{{range( 0, @n-1 )}}" value="{{@i}}">
+	<repeat group="{{range( 1, @n )}}" value="{{@i}}">
 		{{@self->renderInputRow( @defaults, @i )}}
 	</repeat>
 </ul>
 <span class='ff_item_add' id="{{@self->fullId('add')}}"><img src='{{@self->option("resourcesURL")}}/images/add.png' /> More</span>
 <script type="text/javascript">
 	ff_bindAddButton( '{{@self->fullId()}}' );
-<repeat group="{{range( 0, @n-1 )}}" value="{{@i}}">
+<repeat group="{{range( 1, @n )}}" value="{{@i}}">
 	ff_bindRemoveButton( '{{@self->fullId()}}',{{@i}} );
 </repeat>
 ff['lists']['{{@self->fullId()}}'] = {{json_encode( array(

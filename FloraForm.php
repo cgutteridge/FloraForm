@@ -403,7 +403,7 @@ class FloraForm_Field_List extends FloraForm_Field
 
 	function fromForm( &$values, $form_data )
 	{
-		$i = 0;
+		$i = 1;
 		$done = false;
 		$values[$this->id] = array();
 		while( !$done )
@@ -421,8 +421,8 @@ class FloraForm_Field_List extends FloraForm_Field
 			{
 				$values[$this->id][$i] = array();
 				$field = clone $this->field;
-				$field->setId( $i );
-				$field->fromForm( $values[$this->id], $form_data );
+				$field->setIdPrefix( $field->options["id-prefix"]."_".$i );
+				$field->fromForm( $values[$this->id][$i], $form_data );
 			}	
 			$i++;
 		}
