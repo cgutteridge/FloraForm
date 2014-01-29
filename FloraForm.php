@@ -71,7 +71,14 @@ abstract class FloraForm_Component
 	function render( $defaults=array() )
 	{
 		global $f3, $template;
-		$default = isset($defaults[$this->id]) ?  $default = $defaults[$this->id] : "";
+		$default = !empty($defaults[$this->id]) ?  $defaults[$this->id] : "";
+#		print "\n fullid=".$this->fullId()."\n";
+#		print "\nid=".$this->id."\n";
+#		print "default=";
+#		print_r($default);
+#		print "defaults=";
+#		print_r($defaults);
+#		print "\n\n";	
 		$f3->set('default', $default);
 		$f3->set('defaults', $defaults);
 		$f3->set('self', $this);
@@ -82,7 +89,8 @@ abstract class FloraForm_Component
 	function renderInput( $defaults=array() )
 	{
 		global $f3, $template;
-		$default = isset($defaults[$this->id]) ?  $default = $defaults[$this->id] : "";
+		#$default = isset($defaults[$this->id]) ?  $default = $defaults[$this->id] : "";
+		$default = !empty($defaults[$this->id]) ?  $defaults[$this->id] : $defaults;
 		$f3->set('default', $default);
 		$f3->set('self', $this);
 		return $template->render($this->options["template"]);
@@ -442,7 +450,9 @@ class FloraForm_Field_List extends FloraForm_Field
 	function renderInputRow( $defaults, $i )
 	{
 		global $f3, $template;
-                $default = isset($defaults[$this->id]) ?  $default = $defaults[$this->id] : "";
+		#print "renderinputrow for $i : "; print_r($defaults);
+                $default = !empty($defaults[$i-1]) ?  $defaults[$i-1] : "";
+		#print "renderinputrow default : "; print_r($default);
                 $f3->set('i', $i);
                 $f3->set('default', $default);
                 $f3->set('defaults', $defaults);

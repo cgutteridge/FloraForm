@@ -4,7 +4,7 @@
 </check>
 <ul id="{{@self->fullId('list')}}">
 	<repeat group="{{range( 1, @n )}}" value="{{@i}}">
-		{{@self->renderInputRow( @defaults, @i )}}
+		{{@self->renderInputRow( @default, @i )}}
 	</repeat>
 </ul>
 <span class='ff_item_add' id="{{@self->fullId('add')}}"><img src='{{@self->option("resourcesURL")}}/images/add.png' /> More</span>
