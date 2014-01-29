@@ -289,12 +289,12 @@ class FloraForm_Field_Conditional extends FloraForm_Field
 		}
 	}
 
-	function conditionsJson()
+	function conditionsJson($defaults=array())
 	{
 		$conditions = array();
 		foreach($this->options["conditions"] as $condition)
 		{
-			$conditions[] = array($condition[0], $condition[1]->render());
+			$conditions[] = array($condition[0], $condition[1]->render($defaults));
 		}
 		return json_encode($conditions);
 	}
