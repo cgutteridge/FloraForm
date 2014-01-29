@@ -227,10 +227,18 @@ class FloraForm_Field_Combo extends FloraForm_Component
 
 	function fromForm( &$values, $form_data )
 	{
-		$values[$this->id] = array();
+		if(!empty($this->id))
+		{
+			$values[$this->id] = array();
+		}
 		foreach( $this->fields as $field )
 		{
-			$field->fromForm( $values[$this->id], $form_data );
+			if(empty($this->id))
+			{
+				$field->fromForm( $values, $form_data );
+			}else{
+				$field->fromForm( $values[$this->id], $form_data );
+			}
 		}
 	}
 
