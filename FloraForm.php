@@ -72,13 +72,7 @@ abstract class FloraForm_Component
 	{
 		global $f3, $template;
 		$default = !empty($defaults[$this->id]) ?  $defaults[$this->id] : "";
-#		print "\n fullid=".$this->fullId()."\n";
-#		print "\nid=".$this->id."\n";
-#		print "default=";
-#		print_r($default);
-#		print "defaults=";
-#		print_r($defaults);
-#		print "\n\n";	
+
 		$f3->set('default', $default);
 		$f3->set('defaults', $defaults);
 		$f3->set('self', $this);
@@ -89,8 +83,9 @@ abstract class FloraForm_Component
 	function renderInput( $defaults=array() )
 	{
 		global $f3, $template;
-		#$default = isset($defaults[$this->id]) ?  $default = $defaults[$this->id] : "";
-		$default = !empty($defaults[$this->id]) ?  $defaults[$this->id] : $defaults;
+
+		$default = isset($defaults[$this->id]) ?  $default = $defaults[$this->id] : "";
+		#$default = !empty($defaults[$this->id]) ?  $defaults[$this->id] : $defaults;
 		$f3->set('default', $default);
 		$f3->set('self', $this);
 		return $template->render($this->options["template"]);
@@ -248,6 +243,31 @@ class FloraForm_Field_Combo extends FloraForm_Component
 				$field->fromForm( $values[$this->id], $form_data );
 			}
 		}
+	}
+
+	function render( $defaults=array() )
+	{
+		global $f3, $template;
+		$default = !empty($defaults[$this->id]) ?  $defaults[$this->id] : "";
+		$default = empty($this->id) ?  $defaults : $default;
+
+		$f3->set('default', $default);
+		$f3->set('defaults', $defaults);
+		$f3->set('self', $this);
+
+		return $template->render($this->options["surround"]);
+	}
+
+	function renderInput( $defaults=array() )
+	{
+		global $f3, $template;
+
+		$default = isset($defaults[$this->id]) ?  $default = $defaults[$this->id] : "";
+		$default = empty($this->id) ?  $defaults : $default;
+		#$default = !empty($defaults[$this->id]) ?  $defaults[$this->id] : $defaults;
+		$f3->set('default', $default);
+		$f3->set('self', $this);
+		return $template->render($this->options["template"]);
 	}
 
 	function classes()

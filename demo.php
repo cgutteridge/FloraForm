@@ -379,8 +379,8 @@ class Demo {
 
 	public function renderForm($flags=array())
 	{
-		$form = $this->getForm($flags);
-		return $form->render();
+		$form = $this->getForm();
+		return $form->render($flags);
 	}
 
 	public function fromForm($flags=array())
@@ -396,6 +396,47 @@ class Demo {
 		return $issues;
 	}
 }
+
+$some_defaults = array(
+    "provisionaltitle" => "patrick", 
+    "provisionalcode" => "test foo",
+    "provisionalsession" => "1415",
+    "provisionalsemester" => "semester",
+    "assessment" => Array(
+            Array(
+                    "description" => "dsasd asda",
+                    "frequency" => "4rr",
+                    "percent" => "dsf",
+                    "type" => "exam",
+                    "examduration" => "sdfsd",
+                    "weeknos" => "sdfsf",
+                    "feedback" => "fdsfsdfsd",
+                ),
+
+             Array(
+                    "description" => "sdfsf",
+                    "frequency" => "sdfsfs",
+                    "percent" => "sdffs",
+                    "type" => "exam",
+                    "examduration" => "sdfsfs",
+                    "weeknos" => "sdfsdf",
+                    "feedback" => "sdfsd sdfsdf dsfsdfs sdfsfs",
+                ),
+
+        ),
+
+    "referral" => "100EXAM",
+    "resources" => Array(
+            Array(
+                    "type" => "background",
+                    "isbn" => "sdfsd",
+                    "details" => "",
+                )
+
+        )
+
+);
+
 ?>
 <body>
 <?php 
@@ -412,7 +453,7 @@ error_reporting(E_ALL);
 
 $demo = new Demo();
 if(empty($_POST)){
-	echo $demo->renderForm();
+	echo $demo->renderForm($some_defaults);
 }else{
 	$data = $demo->fromForm( ); 
 	echo "<pre>".print_r($data, true)."<pre>";	
