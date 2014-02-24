@@ -1,4 +1,4 @@
-<span class='ff_combo_{{@self->option("layout")}}'>
+<span class='ff_combo_{{@self->option("layout")}}' id="{{@self->fullId()}}">
 	<repeat group="{{ @self->fields }}" value="{{ @field }}">
 		{{ @field->render(@default) }}
 	</repeat>

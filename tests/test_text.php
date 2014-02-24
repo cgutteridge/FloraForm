@@ -1,5 +1,4 @@
 <?php
-$test = new Test;
 
 $id="test_text";
 $value="foo bacon";
@@ -20,6 +19,14 @@ $text->fromForm($result, $_POST);
 $test->expect( array_key_exists($id, $result), "The id is in the result array");
 
 $test->expect( $result[$id] == $value, "the value was correctly found");
+
+$_REQUEST[$id] = $value;
+
+$result2 = $text->fromForm();
+
+$test->expect( array_key_exists($id, $result2), "From form without args - id in the result array");
+
+$test->expect( $result2[$id] == $value, "From form without args value was correctly found");
 
 $id2 = "test_second";
 

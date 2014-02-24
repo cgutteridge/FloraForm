@@ -63,10 +63,19 @@ abstract class FloraForm_Component
 		return $id;
 	}
 
-	function fromForm( &$values, $form_data )
+	function fromForm( &$values=array(), $form_data=null )
 	{
-		return "fromForm() should be subclassed";
+		global $_REQUEST;
+		if( $this->id == "" ) { return; }
+		if( $form_data == null ) { $form_data=$_REQUEST; }
+
+		if(array_key_exists($this->fullID(), $form_data)){
+			$values[$this->id] = $form_data[$this->fullID()];
+		}
+
+		return $values;
 	}
+
 
 	function render( $defaults=array() )
 	{
@@ -166,15 +175,6 @@ abstract class FloraForm_Component
 abstract class FloraForm_Field extends FloraForm_Component
 {
 	var $default_options = array("template"=>"floraform/floraform_default.htm", "surround"=>"floraform/field_surround.htm");
-	function fromForm( &$values, $form_data )
-	{
-		global $_POST;
-		if( $this->id == "" ) { return; }
-
-		if(array_key_exists($this->fullID(), $form_data)){
-			$values[$this->id] = $form_data[$this->fullID()];
-		}
-	}
 
 	function classes()
 	{
@@ -196,12 +196,15 @@ class FloraForm_Section extends FloraForm_Component
 		return $template->render($this->options["template"]);
 	}	
 
-	function fromForm( &$values, $form_data )
+	function fromForm( &$values=array(), $form_data=array() )
 	{
+		global $_REQUEST;
+		if( $form_data == null ) { $form_data=$_REQUEST; }
 		foreach( $this->fields as $field )
 		{
 			$field->fromForm( $values, $form_data );
 		}
+		return $values;
 	}
 
 	function classes()
@@ -228,12 +231,16 @@ class FloraForm_Field_Combo extends FloraForm_Component
 	var $default_options = array("template"=>"floraform/combo.htm", "surround"=>"floraform/component_surround.htm", "heading"=>2);
 	var $fields = array();
 
-	function fromForm( &$values, $form_data )
+	function fromForm( &$values=array(), $form_data=array() )
 	{
+		global $_REQUEST;
+		if( $form_data == null ) { $form_data=$_REQUEST; }
+
 		if(!empty($this->id))
 		{
 			$values[$this->id] = array();
 		}
+
 		foreach( $this->fields as $field )
 		{
 			if(empty($this->id))
@@ -243,6 +250,8 @@ class FloraForm_Field_Combo extends FloraForm_Component
 				$field->fromForm( $values[$this->id], $form_data );
 			}
 		}
+
+		return $values;
 	}
 
 	function render( $defaults=array() )
@@ -306,8 +315,11 @@ class FloraForm_Field_Conditional extends FloraForm_Field
 {
 	var $default_options = array("template"=>"floraform/conditional.htm", "surround"=>"floraform/field_surround.htm");
 	
-	function fromForm( &$values, $form_data )
+	function fromForm( &$values=array(), $form_data=array() )
 	{
+		global $_REQUEST;
+		if( $form_data == null ) { $form_data=$_REQUEST; }
+
 		$this->fields[0]->fromForm( $values, $form_data );
 
 		$value = $form_data[$this->fields[0]->fullId()];
@@ -323,6 +335,8 @@ class FloraForm_Field_Conditional extends FloraForm_Field
 				break;
 			}
 		}
+		
+		return $values;
 	}
 
 	function conditionsJson($defaults=array())
@@ -378,7 +392,7 @@ class FloraForm_Field_File extends FloraForm_Field
 		return parent::classes()." ff_textarea";
 	}
 
-	function fromForm( &$values, $form_data )
+	function fromForm( &$values=array(), $form_data=array() )
 	{
 		global $_FILES;
 			
@@ -388,6 +402,8 @@ class FloraForm_Field_File extends FloraForm_Field
 		if(array_key_exists($this->fullID(), $_FILES)){
 			$values[$this->id] = $_FILES[$this->fullID()];
 		}
+		
+		return $values;
 	}
 }
 
@@ -437,8 +453,11 @@ class FloraForm_Field_List extends FloraForm_Field
 		return $this->add( $type, $options);
 	}
 
-	function fromForm( &$values, $form_data )
+	function fromForm( &$values=array(), $form_data=array() )
 	{
+		global $_REQUEST;
+		if( $form_data == null ) { $form_data=$_REQUEST; }
+
 		$i = 1;
 		$done = false;
 		$values[$this->id] = array();
@@ -465,6 +484,8 @@ class FloraForm_Field_List extends FloraForm_Field
 
 		# remove empty lines
 		$values[ $this->id ] = array_filter( $values[$this->id], "FloraForm_var_is_set" );
+
+		return $values;
 	}
 	
 	function renderInputRow( $defaults, $i )
