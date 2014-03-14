@@ -112,5 +112,7 @@ function ff_restyleList( list_id )
 		}
 		
 	}
-	ff_initWysiwyg();
+	$('.ff_input_html').each(function(){
+    		tinyMCE.execCommand('mceAddControl',false,$(this).attr('id'))
+  	});
 }
