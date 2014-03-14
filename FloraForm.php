@@ -28,9 +28,16 @@ abstract class FloraForm_Component
 	{
 		foreach ( $config as $field_def )
 		{
-			foreach($field_def as $field_type => $options)
+			if(count($field_def) == 1)
 			{
-				$this->add($field_type, $options);
+			# THIS IS TO SUPPOPT THE OLD STYLE CONFIG, IT WILL BE REMOVED IN THE FUTURE
+				foreach($field_def as $field_type => $options)
+				{
+					
+					$this->add($field_type, $options);
+				}
+			}else{
+					$this->add($field_def["type"], $field_def);
 			}
 		}
 	}
