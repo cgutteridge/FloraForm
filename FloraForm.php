@@ -115,8 +115,8 @@ abstract class FloraForm_Component
 
 	function htmlOption( $opt_key )
 	{
-		if( $this->hasOption( $opt_key."_html" ) ) { return $this->options[$opt_key."_html"]; }
-		if( $this->hasOption( $opt_key ) ) { return htmlentities($this->options[$opt_key]); }
+		if( $this->hasOption( $opt_key."_html" ) ) { return html_entity_decode($this->options[$opt_key."_html"]); }
+		if( $this->hasOption( $opt_key ) ) { return $this->options[$opt_key]; }
 	}	
 
 	function hasHtmlOption( $opt_key )
@@ -222,14 +222,14 @@ class FloraForm_Section extends FloraForm_Component
 
 class FloraForm extends FloraForm_Section
 {
-
-	function render( $defaults=array() )
-	{
-		global $f3, $template;
-		$f3->set('form_content', parent::render($defaults));
-		$f3->set('self', $this);
-		return $template->render('floraform/form.htm');
-	}
+	var $default_options = array("template"=>"floraform/form.htm", "heading"=>2, "layout"=>"section");
+	#function render( $defaults=array() )
+	#{
+	#	global $f3, $template;
+	#	$f3->set('form_content', parent::render($defaults));
+	#	$f3->set('self', $this);
+	#	return $template->render('floraform/form.htm');
+	#}
 	
 }
 
@@ -295,16 +295,16 @@ class FloraForm_Field_Combo extends FloraForm_Component
 class FloraForm_Info extends FloraForm_Component
 {
 	
-	var $default_options = array("surround"=>"floraform/component_surround.htm");
+	var $default_options = array("template"=>"floraform/info.htm", "surround"=>"floraform/component_surround.htm");
 	function classes()
 	{
 		return parent::classes()." ff_info";
 	}
 	
-	function renderInput($defaults=array())
-	{
-		return $this->htmlOption("content");
-	}
+	#function renderInput($defaults=array())
+	#{
+#		return $this->htmlOption("content");
+	#}
 		
 }
 

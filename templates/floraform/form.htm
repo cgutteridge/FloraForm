@@ -1,6 +1,9 @@
-<form method='POST' enctype="multipart/form-data"<check if='{{@self->hasHtmlOption("action")}}'><true> action='{{@self->htmlOption("action")}}'</true></check>>
+<form method='POST' enctype="multipart/form-data"<check if='{{@self->hasHtmlOption("action")}}'><true> action='{{@self->htmlOption("action")|raw}}'</true></check>>
 	<div class="ff_form">
-			{{@form_content | raw}}
+		<repeat group="{{@self->fields}}" value="{{@field}}">
+			{{@field->render(@defaults)}}
+		</repeat>
+
 	</div>
 </form>
 <script type="text/javascript">ff_init();</script>
