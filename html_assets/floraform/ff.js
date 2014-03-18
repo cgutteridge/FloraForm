@@ -10,7 +10,7 @@ function ff_initWysiwyg()
 	tinyMCE.init({
 		mode : 'textareas',
 		theme : 'advanced',
-		plugins : 'table,layer',
+		plugins : 'table,layer,paste,searchreplace',
 		theme_advanced_toolbar_location : 'top',
         	theme_advanced_buttons1 : "bold,italic,underline,strikethrough,charmap|,bullist,numlist,|,undo,redo,|,link,unlink,|,sub,sup,|,cleanup,removeformat,|,indent,outdent,|,cut,copy,paste,pastetext,|,search,replace,|,code",
         	theme_advanced_buttons2 : "",
