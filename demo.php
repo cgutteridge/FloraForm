@@ -251,7 +251,7 @@ class Demo {
 			"layout" => "block",
 			"title" => "Feedback" ));
 
-		$s1->add( "CHOICE", array( 
+		$s1->add( "MULTICHOICE", array( 
 			"id" => "referral",
 			"layout" => "section",
 			"title" => "2.3 Referral Policy",
@@ -425,7 +425,7 @@ $some_defaults = array(
 
         ),
 
-    "referral" => "100EXAM",
+    "referral" => array("100EXAM"),
     "resources" => Array(
             Array(
                     "type" => "background",

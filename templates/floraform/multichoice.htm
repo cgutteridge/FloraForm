@@ -1,0 +1,19 @@
+<check if="{{@self->option('mode') == 'multi-list'}}">
+	<true>
+		<select name="{{@self->fullId()}}" id="{{@self->fullId()}}" class='ff_multiselect'>
+			<repeat group="{{ @self->option('choices') }}" key="{{ @code }}" value="{{ @value }}">
+				<option value="{{@code}}" {{in_array(@code, @default) ? 'selected="selected"' : ''}}>{{@value}}</option>
+			</repeat>
+		</select>
+	</true>
+	<false>
+		<div class="ff_multiselect">
+		<repeat group="{{@self->option('choices')}}" key="{{@code}}" value="{{@value}}">
+			<label class='ff_checkbox_option ff_checkbox_option_{{@code}}'>
+				<input class='ff_input_checkbox' value='{{@code}}' name='{{@self->fullId()}}' type='checkbox'	{{ in_array( @code, @default ) ? " checked='checked'" : "" }} />
+			{{@value}}
+			</label>
+		</repeat>
+		</div>
+	</false>
+</check>

@@ -83,6 +83,27 @@ abstract class FloraForm_Component
 		return $values;
 	}
 
+	function issues(&$issues=array(), $form_data=null )
+	{
+		global $_REQUEST;
+		if( ! array_key_exists("validate", $this->options)){ return; }
+		if( $this->id == "" ) { return; }
+		if( $form_data == null ) { $form_data=$_REQUEST; }
+		
+		if(array_key_exists($this->fullID(), $form_data))
+		{	
+			$validate = $this->options["validate"];
+			if(method_exists($this, $validate ))
+			{
+				$issues[$this->id] = $this->$validate($form_data[$this->fullID()]);
+			}else{
+				$issues[$this->id] = $validate($form_data[$this->fullID()]);
+			}
+		}
+		
+		return $issues;
+	}
+
 
 	function render( $defaults=array() )
 	{
@@ -163,6 +184,7 @@ abstract class FloraForm_Component
 		elseif( $type == "TEXTAREA" ) { $field = new FloraForm_Field_Textarea( $options ); }
 		elseif( $type == "HTML" ) { $field = new FloraForm_Field_HTML( $options ); }
 		elseif( $type == "CHOICE" ) { $field = new FloraForm_Field_Choice( $options ); }
+		elseif( $type == "MULTICHOICE" ) { $field = new FloraForm_Field_Multichoice( $options ); }
 		elseif( $type == "FILE" ) { $field = new FloraForm_Field_File( $options ); }
 		elseif( $type == "CONDITIONAL" ) { $field = new FloraForm_Field_Conditional( $options ); }
 		elseif( $type == "SUBMIT" ) { $field = new FloraForm_Field_Submit( $options ); }
@@ -214,6 +236,17 @@ class FloraForm_Section extends FloraForm_Component
 		return $values;
 	}
 
+	function issues( &$issues=array(), $form_data=array() )
+	{
+		global $_REQUEST;
+		if( $form_data == null ) { $form_data=$_REQUEST; }
+		foreach( $this->fields as $field )
+		{
+			$field->issues( $issues, $form_data );
+		}
+		return $issues;
+	}
+
 	function classes()
 	{
 		return parent::classes()." ff_section";
@@ -259,6 +292,29 @@ class FloraForm_Field_Combo extends FloraForm_Component
 		}
 
 		return $values;
+	}
+
+	function issues( &$issues=array(), $form_data=array() )
+	{
+		global $_REQUEST;
+		if( $form_data == null ) { $form_data=$_REQUEST; }
+
+		if(!empty($this->id))
+		{
+			$issues[$this->id] = array();
+		}
+
+		foreach( $this->fields as $field )
+		{
+			if(empty($this->id))
+			{
+				$field->issues( $issues, $form_data );
+			}else{
+				$field->issues( $issues[$this->id], $form_data );
+			}
+		}
+
+		return $issues;
 	}
 
 	function render( $defaults=array() )
@@ -345,6 +401,31 @@ class FloraForm_Field_Conditional extends FloraForm_Field
 		
 		return $values;
 	}
+	
+	function issues( &$issues=array(), $form_data=array() )
+	{
+		global $_REQUEST;
+		if( $form_data == null ) { $form_data=$_REQUEST; }
+
+		$this->fields[0]->fromForm( $issues, $form_data );
+
+		$value = $form_data[$this->fields[0]->fullId()];
+		foreach($this->options["conditions"] as $pattern_field)
+		{
+			$regex = $pattern_field[0];
+			$field = $pattern_field[1];
+
+			$regex = preg_replace('#/#','\/',$regex);
+			if(preg_match("/$regex/i", $value))
+			{
+				$field->fromForm( $issues, $form_data);
+				break;
+			}
+		}
+		
+		return $issues;
+	}
+
 
 	function conditionsJson($defaults=array())
 	{
@@ -412,6 +493,11 @@ class FloraForm_Field_File extends FloraForm_Field
 		
 		return $values;
 	}
+	
+	function issues( &$issues=array(), $form_data=array() )
+	{
+		return;
+	}
 }
 
 class FloraForm_Field_HTML extends FloraForm_Field
@@ -426,6 +512,28 @@ class FloraForm_Field_HTML extends FloraForm_Field
 }
 
 #TODO MultiChoice field (different to choice
+class FloraForm_Field_Multichoice extends FloraForm_Field
+{
+	var $default_options = array("template"=>"floraform/multichoice.htm", "surround"=>"floraform/component_surround.htm");
+
+	function render( $defaults=array() )
+	{
+		global $f3, $template;
+
+		$default = !empty($defaults[$this->id]) ?  $defaults[$this->id] : array();
+
+		$f3->set('default', $default);
+		$f3->set('defaults', $defaults);
+		$f3->set('self', $this);
+
+		return $template->render($this->options["surround"]);
+	}
+	
+	function classes()
+	{
+		return parent::classes()." ff_select";
+	}
+}
 
 class FloraForm_Field_Choice extends FloraForm_Field
 {
@@ -495,6 +603,41 @@ class FloraForm_Field_List extends FloraForm_Field
 		return $values;
 	}
 	
+	function issues( &$issues=array(), $form_data=array() )
+	{
+		global $_REQUEST;
+		if( $form_data == null ) { $form_data=$_REQUEST; }
+
+		$i = 1;
+		$done = false;
+		$issues[$this->id] = array();
+		while( !$done )
+		{
+			$done = true;
+			foreach( $form_data as $key=>$value )
+			{
+				if( strpos( $key, $this->fullID()."_".$i ) === 0 )
+				{
+					$done = false;
+					break; // done on this loop, try next increment of $i
+				}
+			}
+			if( !$done )
+			{
+				$issues[$this->id][$i] = array();
+				$field = clone $this->field;
+				$field->setIdPrefix( $field->options["id-prefix"]."_".$i );
+				$field->issues( $issues[$this->id][$i], $form_data );
+			}	
+			$i++;
+		}
+
+		# remove empty lines
+		$issues[ $this->id ] = array_filter( $issues[$this->id], "FloraForm_var_is_set" );
+
+		return $issues;
+	}
+
 	function renderInputRow( $defaults, $i )
 	{
 		global $f3, $template;

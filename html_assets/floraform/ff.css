@@ -25,6 +25,12 @@
 	padding-right: 0.5em;
 }
 
+.ff_checkbox_option {
+	display: inline-block;
+	vertical-align: top;
+	padding-bottom: 0.5em;
+	width: 40%;
+}
 
 
 .ff_section h2.ff_title {
