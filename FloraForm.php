@@ -123,6 +123,7 @@ abstract class FloraForm_Component
 
 		$default = isset($defaults[$this->id]) ?  $default = $defaults[$this->id] : "";
 		#$default = !empty($defaults[$this->id]) ?  $defaults[$this->id] : $defaults;
+		$f3->set('defaults', $defaults);
 		$f3->set('default', $default);
 		$f3->set('self', $this);
 		return $template->render($this->options["template"]);
@@ -377,7 +378,7 @@ class FloraForm_Field_Text extends FloraForm_Field
 class FloraForm_Field_Conditional extends FloraForm_Field
 {
 	var $default_options = array("template"=>"floraform/conditional.htm", "surround"=>"floraform/field_surround.htm");
-	
+
 	function fromForm( &$values=array(), $form_data=array() )
 	{
 		global $_REQUEST;
@@ -435,6 +436,24 @@ class FloraForm_Field_Conditional extends FloraForm_Field
 			$conditions[] = array($condition[0], $condition[1]->render($defaults));
 		}
 		return json_encode($conditions);
+	}
+
+	function setId( $new_id )
+	{
+		parent::setId( $new_id );
+		foreach($this->options["conditions"] as $condition)
+		{
+			$condition[1]->setIdPrefix( $this->fullId() );
+		}
+	}
+
+	function setIdPrefix( $new_id_prefix )
+	{
+		parent::setIdPrefix( $new_id_prefix );
+		foreach($this->options["conditions"] as $condition)
+		{
+			$condition[1]->setIdPrefix( $this->fullId() );
+		}
 	}
 
 	function processConfig( &$config )
@@ -516,19 +535,17 @@ class FloraForm_Field_Multichoice extends FloraForm_Field
 {
 	var $default_options = array("template"=>"floraform/multichoice.htm", "surround"=>"floraform/component_surround.htm");
 
-	function render( $defaults=array() )
-	{
-		global $f3, $template;
+        function renderInput( $defaults=array() )
+        {
+                global $f3, $template;
 
-		$default = !empty($defaults[$this->id]) ?  $defaults[$this->id] : array();
-
-		$f3->set('default', $default);
-		$f3->set('defaults', $defaults);
-		$f3->set('self', $this);
-
-		return $template->render($this->options["surround"]);
-	}
+                $default = isset($defaults[$this->id]) ?  $default = $defaults[$this->id] : array();
 	
+                $f3->set('default', $default);
+                $f3->set('self', $this);
+                return $template->render($this->options["template"]);
+        }
+
 	function classes()
 	{
 		return parent::classes()." ff_select";

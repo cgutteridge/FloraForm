@@ -17,7 +17,6 @@ function ff_initWysiwyg()
         	theme_advanced_buttons3 : "",
         	theme_advanced_buttons4 : "",
 		editor_selector : 'ff_input_html',
-		content_css : "resources/tinymce.css"  
 	});
 }
 
@@ -60,6 +59,7 @@ function ff_initConditional(selector, conditions)
 	$(selector).change( data, ff_checkConditional );
 	var e = {data:data};
 	ff_checkConditional( e );
+
 }
 
 function ff_checkConditional( e ) {
@@ -70,11 +70,23 @@ function ff_checkConditional( e ) {
 		//the regex is always case insensitive (not sure if this is wrong or write but its easier for the user)
 		if($(e.data.selector).val().match(new RegExp(condition[0], "i")))
 		{
+			// this is very belt and braces for compatibility with LIST type
+			$('.ff_input_html').each(function(){
+				tinyMCE.execCommand('mceRemoveControl',false,$(this).attr('id'))
+			});
+			$(e.data.box).html(condition[1]);
+			ff_initWysiwyg();
+			$('.ff_input_html').each(function(){
+				tinyMCE.execCommand('mceAddControl',false,$(this).attr('id'))
+			});
+
+		/*	tried to make this jazzy but couldnt get it to work dependably on page load
+			it is on hold until i work out why
 			$(e.data.box).slideUp(200, function(){
 				$(e.data.box).html(condition[1]);
 				ff_initWysiwyg();
 				$(e.data.box).slideDown();
-			});
+			});*/
 			break;
 		}
 	}
@@ -112,7 +124,8 @@ function ff_restyleList( list_id )
 		}
 		
 	}
-	$('.ff_input_html').each(function(){
-    		tinyMCE.execCommand('mceAddControl',false,$(this).attr('id'))
-  	});
+        $('.ff_input_html').each(function(){
+                tinyMCE.execCommand('mceAddControl',false,$(this).attr('id'))
+        });
 }
+
