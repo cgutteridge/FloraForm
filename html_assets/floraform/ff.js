@@ -1,25 +1,35 @@
 
 var ff = { "lists": {} };
 
+document.tinyMCEConfig = {
+	mode : 'none',
+	theme : 'advanced',
+	plugins : 'table,layer,paste,searchreplace',
+	theme_advanced_toolbar_location : 'top',
+	theme_advanced_buttons1 : "bold,italic,underline,strikethrough,charmap|,bullist,numlist,|,undo,redo,|,link,unlink,|,sub,sup,|,cleanup,removeformat,|,indent,outdent,|,cut,copy,paste,pastetext,|,search,replace,|,code",
+	theme_advanced_buttons2 : "",
+	theme_advanced_buttons3 : "",
+	theme_advanced_buttons4 : "",
+};
+
 function ff_init()
 {
 	ff_initWysiwyg();
 }
 function ff_initWysiwyg()
 {
-	tinyMCE.init({
-		mode : 'textareas',
-		theme : 'advanced',
-		plugins : 'table,layer,paste,searchreplace',
-		theme_advanced_toolbar_location : 'top',
-        	theme_advanced_buttons1 : "bold,italic,underline,strikethrough,charmap|,bullist,numlist,|,undo,redo,|,link,unlink,|,sub,sup,|,cleanup,removeformat,|,indent,outdent,|,cut,copy,paste,pastetext,|,search,replace,|,code",
-        	theme_advanced_buttons2 : "",
-        	theme_advanced_buttons3 : "",
-        	theme_advanced_buttons4 : "",
-		editor_selector : 'ff_input_html',
-	});
+	tinyMCE.init(document.tinyMCEConfig);
+}
+function ff_addWysiwyg(id)
+{
+	tinyMCE.execCommand('mceRemoveControl',false,id);
+	tinyMCE.execCommand('mceAddControl',false,id);
 }
 
+function ff_removeWysiwyg(id)
+{
+	tinyMCE.execCommand('mceRemoveControl',false,id);
+}
 
 function ff_bindRemoveButton( list_id, n )
 {
@@ -71,20 +81,16 @@ function ff_checkConditional( e ) {
 		if($(e.data.selector).val().match(new RegExp(condition[0], "i")))
 		{
 			// this is very belt and braces for compatibility with LIST type
-			$('.ff_input_html').each(function(){
-				tinyMCE.execCommand('mceRemoveControl',false,$(this).attr('id'))
+                        $(e.data.selector+'_conditional .ff_input_html').each(function(){
+				ff_removeWysiwyg($(this).attr('id'));
 			});
 			$(e.data.box).html(condition[1]);
-			ff_initWysiwyg();
-			$('.ff_input_html').each(function(){
-				tinyMCE.execCommand('mceAddControl',false,$(this).attr('id'))
-			});
-
+			
 		/*	tried to make this jazzy but couldnt get it to work dependably on page load
 			it is on hold until i work out why
 			$(e.data.box).slideUp(200, function(){
 				$(e.data.box).html(condition[1]);
-				ff_initWysiwyg();
+				must specify id here -> ff_initWysiwyg();
 				$(e.data.box).slideDown();
 			});*/
 			break;
