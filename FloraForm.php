@@ -171,6 +171,7 @@ abstract class FloraForm_Component
 		elseif( $type == "COMBO" ) { $field = new FloraForm_Field_Combo( $options ); }
 		elseif( $type == "INFO" ) { $field = new FloraForm_Info( $options ); }
 		elseif( $type == "SECTION" ) { $field = new FloraForm_Section( $options ); }
+		elseif( $type == "TIME" ) { $field = new FloraForm_Field_Time( $options ); }
 		else { $this->error( "bad field type: $type <br />options: <pre>".print_r($options, true)."</pre>" ); return; }
 
 		return $field;
@@ -315,6 +316,16 @@ class FloraForm_Field_Text extends FloraForm_Field
 	function classes()
 	{
 		return parent::classes()." ff_text";
+	}
+}
+
+class FloraForm_Field_Time extends FloraForm_Field
+{
+	var $default_options = array("template"=>"floraform/time.htm", "surround"=>"floraform/field_surround.htm");
+	
+	function classes()
+	{
+		return parent::classes()." ff_time";
 	}
 }
 
