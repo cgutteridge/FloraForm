@@ -1,0 +1,17 @@
+<div class="bootstrap-datepicker"><input name="{{@self->fullId()}}_date" id="{{@self->fullId()}}_date" type="text" class="ff_input_text" value="{{@default}}" <check if="{{@self->hasOption( 'size' )}}"><true>size="{{@self->option("size")}}"</true></check> ></div>
+
+
+<div class="bootstrap-timepicker"><input name="{{@self->fullId()}}_time" id="{{@self->fullId()}}_time" type="text" class="ff_input_text" value="{{@default}}" <check if="{{@self->hasOption( 'size' )}}"><true>size="{{@self->option("size")}}"</true></check> ></div>
+
+<script>
+// TODO make this configurable
+$('#{{@self->fullId()}}_date').datepicker({
+    defaultDate: 0,
+    dateFormat: "yy-mm-dd"
+});
+$('#{{@self->fullId()}}_time').timepicker({
+    minuteStep: 5,
+    showInputs: false,
+    disableFocus: true
+});
+</script>

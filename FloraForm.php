@@ -196,6 +196,7 @@ abstract class FloraForm_Component
 		elseif( $type == "SECTION" ) { $field = new FloraForm_Section( $options ); }
 		elseif( $type == "TIME" ) { $field = new FloraForm_Field_Time( $options ); }
 		elseif( $type == "DATE" ) { $field = new FloraForm_Field_Date( $options ); }
+		elseif( $type == "DATETIME" ) { $field = new FloraForm_Field_DateTime( $options ); }
 		else { $this->error( "bad field type: $type <br />options: <pre>".print_r($options, true)."</pre>" ); return; }
 
 		return $field;
@@ -377,6 +378,7 @@ class FloraForm_Field_Text extends FloraForm_Field
 	}
 }
 
+// TODO fromForm
 class FloraForm_Field_Time extends FloraForm_Field
 {
 	var $default_options = array("template"=>"floraform/time.htm", "surround"=>"floraform/field_surround.htm");
@@ -387,6 +389,7 @@ class FloraForm_Field_Time extends FloraForm_Field
 	}
 }
 
+// TODO fromForm
 class FloraForm_Field_Date extends FloraForm_Field
 {
 	var $default_options = array("template"=>"floraform/date.htm", "surround"=>"floraform/field_surround.htm");
@@ -394,6 +397,41 @@ class FloraForm_Field_Date extends FloraForm_Field
 	function classes()
 	{
 		return parent::classes()." ff_date";
+	}
+}
+
+class FloraForm_Field_DateTime extends FloraForm_Field
+{
+	var $default_options = array("template"=>"floraform/datetime.htm", "surround"=>"floraform/field_surround.htm");
+	
+	function classes()
+	{
+		return parent::classes()." ff_datetime";
+	}
+	function fromForm( &$values=array(), $form_data=array() )
+	{
+		global $_REQUEST;
+		if( $form_data == null ) { $form_data=$_REQUEST; }
+
+		if(!empty($this->id))
+		{
+			$values[$this->id] = array();
+		}
+
+		if (!isset($form_data[$this->fullID('date')]) || !isset($form_data[$this->fullID('time')])) {
+			echo "FAIL"; return null;
+		}
+
+		// A bit horrible... use strtotime to parse whatever random shonk the user entered, which is hopefully datetime-ish.
+		// Then create a DataTime object and format the date in a known way, so that RedBean will eat it.
+		$date_string = $form_data[$this->fullID('date')].' '.$form_data[$this->fullID('time')];
+		$date_time = new DateTime();
+		$date_time->setTimestamp(strtotime($date_string));
+
+		$values[$this->id] = $date_time->format('Y-m-d H:i:s');
+
+//echo "<pre>"; print_r($values); print_r($form_data); print_r($this); echo "</pre>";
+		return $values;
 	}
 }
 
