@@ -439,8 +439,8 @@ class FloraForm_Field_DateTime extends FloraForm_Field
 			$values[$this->id] = array();
 		}
 
-		if (!isset($form_data[$this->fullID('date')]) || !isset($form_data[$this->fullID('time')])) {
-			echo "FAIL"; return null;
+		if (empty($form_data[$this->fullID('date')]) || empty($form_data[$this->fullID('time')])) {
+			return;
 		}
 
 		// A bit horrible... use strtotime to parse whatever random shonk the user entered, which is hopefully datetime-ish.
