@@ -408,6 +408,27 @@ class FloraForm_Field_DateTime extends FloraForm_Field
 	{
 		return parent::classes()." ff_datetime";
 	}
+
+	function renderInput( $defaults=array() )
+	{
+		global $f3, $template;
+
+		$default = isset($defaults[$this->id]) ?  $default = $defaults[$this->id] : "";
+		#$default = !empty($defaults[$this->id]) ?  $defaults[$this->id] : $defaults;
+		$f3->set('defaults', $defaults);
+		$f3->set('default', $default);
+
+		$f3->set('defaultdate', "");
+		$f3->set('defaulttime', "");
+		if($default)
+		{
+			$f3->set('defaultdate', date("Y-m-d",strtotime($default)));
+			$f3->set('defaulttime', date("H:i:s", strtotime($default)));
+		}
+		$f3->set('self', $this);
+		return $template->render($this->options["template"]);
+	}
+
 	function fromForm( &$values=array(), $form_data=array() )
 	{
 		global $_REQUEST;
