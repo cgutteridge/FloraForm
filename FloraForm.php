@@ -439,7 +439,9 @@ class FloraForm_Field_DateTime extends FloraForm_Field
 			$values[$this->id] = array();
 		}
 
-		if (empty($form_data[$this->fullID('date')]) || empty($form_data[$this->fullID('time')])) {
+		# If both are empty then there was no input but we continue even if one or other is empty because strtotime does something sensible
+		if (empty($form_data[$this->fullID('date')]) && empty($form_data[$this->fullID('time')]))
+		{
 			return;
 		}
 
@@ -451,7 +453,6 @@ class FloraForm_Field_DateTime extends FloraForm_Field
 
 		$values[$this->id] = $date_time->format('Y-m-d H:i:s');
 
-//echo "<pre>"; print_r($values); print_r($form_data); print_r($this); echo "</pre>";
 		return $values;
 	}
 }
