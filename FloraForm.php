@@ -436,7 +436,7 @@ class FloraForm_Field_DateTime extends FloraForm_Field
 
 		if(!empty($this->id))
 		{
-			$values[$this->id] = array();
+			return;
 		}
 
 		# If both are empty then there was no input but we continue even if one or other is empty because strtotime does something sensible
