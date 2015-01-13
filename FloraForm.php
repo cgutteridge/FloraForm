@@ -183,6 +183,7 @@ abstract class FloraForm_Component
 	{
 		if( $type == "TEXT" ) { $field = new FloraForm_Field_Text( $options ); }
 		elseif( $type == "TEXTAREA" ) { $field = new FloraForm_Field_Textarea( $options ); }
+		elseif( $type == "NUMBER" ) { $field = new FloraForm_Field_Number( $options ); }
 		elseif( $type == "HTML" ) { $field = new FloraForm_Field_HTML( $options ); }
 		elseif( $type == "CHOICE" ) { $field = new FloraForm_Field_Choice( $options ); }
 		elseif( $type == "MULTICHOICE" ) { $field = new FloraForm_Field_Multichoice( $options ); }
@@ -371,6 +372,16 @@ class FloraForm_Info extends FloraForm_Component
 class FloraForm_Field_Text extends FloraForm_Field
 {
 	var $default_options = array("template"=>"floraform/text.htm", "surround"=>"floraform/field_surround.htm");
+	
+	function classes()
+	{
+		return parent::classes()." ff_text";
+	}
+}
+
+class FloraForm_Field_Number extends FloraForm_Field
+{
+	var $default_options = array("template"=>"floraform/number.htm", "surround"=>"floraform/field_surround.htm");
 	
 	function classes()
 	{
