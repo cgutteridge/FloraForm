@@ -445,7 +445,7 @@ class FloraForm_Field_DateTime extends FloraForm_Field
 		global $_REQUEST;
 		if( $form_data == null ) { $form_data=$_REQUEST; }
 
-		if(!empty($this->id))
+		if(empty($this->id))
 		{
 			return;
 		}
