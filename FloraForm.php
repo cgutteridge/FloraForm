@@ -261,14 +261,6 @@ class FloraForm_Section extends FloraForm_Component
 class FloraForm extends FloraForm_Section
 {
 	var $default_options = array("template"=>"floraform/form.htm", "heading"=>2, "layout"=>"section");
-	#function render( $defaults=array() )
-	#{
-	#	global $f3, $template;
-	#	$f3->set('form_content', parent::render($defaults));
-	#	$f3->set('self', $this);
-	#	return $template->render('floraform/form.htm');
-	#}
-	
 }
 
 class FloraForm_Field_Combo extends FloraForm_Component
@@ -362,11 +354,6 @@ class FloraForm_Info extends FloraForm_Component
 		return parent::classes()." ff_info";
 	}
 	
-	#function renderInput($defaults=array())
-	#{
-#		return $this->htmlOption("content");
-	#}
-		
 }
 
 class FloraForm_Field_Text extends FloraForm_Field
@@ -709,7 +696,10 @@ class FloraForm_Field_List extends FloraForm_Field
 
 		# remove empty lines
 		$values[ $this->id ] = array_filter( $values[$this->id], "FloraForm_var_is_set" );
-
+		if(empty($values[$this->id]))
+		{
+			unset($values[$this->id]);
+		}
 		return $values;
 	}
 	
