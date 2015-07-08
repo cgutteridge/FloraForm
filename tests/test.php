@@ -9,8 +9,8 @@ require_once(__DIR__."/../FloraForm.php");
 
 $test = new Test;
 
-#include("test_text.php");
-#include("test_combo.php");
+include("test_text.php");
+include("test_combo.php");
 include("test_list.php");
 
 foreach ($test->results() as $result) {
