@@ -14,8 +14,9 @@ $test = new Test;
 #include("test_list.php");
 #include("test_textarea.php");
 #include("test_number.php");
-include("test_hidden.php");
-
+#include("test_hidden.php");
+#include("test_info.php");
+include("test_choice.php");
 
 foreach ($test->results() as $result) {
     echo $result['text'].': ';
