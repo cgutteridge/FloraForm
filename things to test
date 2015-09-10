@@ -1,0 +1,36 @@
+> "TEXT"
+Single Line Text Field
+> "TEXTAREA"
+Multi line text field
+> "NUMBER"
+Single line field which inforces only numerical values
+> "HIDDEN"
+Field which contains a value which cannot be seen (not rendered variable)
+- "INFO"
+Just renders text onto page, can have other variable types added into it (template)
+> "CHOICE"
+Single choice element (radio button or single choice dropdown)
+- "FILE"
+Button for opening file upload dialog
+- "SUBMIT"
+Button for submitting form to server
+- "TIME"
+Choosable time field, no date
+"DATE"
+Choosable date field, no time
+"DATETIME"
+Choosable date and time field
+"HTML"
+Renders rich text editor into page using javascript
+"MULTICHOICE"
+Checkboxes or multi-choice dropdown
+"SECTION"
+Combination of fields that are rendered together
+> "COMBO"
+Allows combinations of other field
+> "LIST"
+Multiples of the same type of other fields
+"CONDITIONAL"
+Element which changes what is rendered based on user choice
+
+
