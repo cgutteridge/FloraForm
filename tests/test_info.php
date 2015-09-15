@@ -22,10 +22,21 @@ $rendered = $info->render();
 #var_dump($rendered);
 $test->expect( strpos( $rendered, 'id="'.$id.'_container"' ), "info - container id is rendered");
 
-$test->expect($info->hasHtmlOption($opt_key),"info - has html option");
+$test->expect( $info->hasHtmlOption($opt_key),"info - has html option");
 
 $test->expect( strpos($rendered, '<h id="test_info_title"'),"info - title tag is rendered");
 $test->expect( strpos($rendered, '<div id="test_info_description"'),"info - description tag is rendered");
 
 $test->expect( strpos($rendered,$content_value),"info - html content rendered");
+/*
+$id2 = "test_info2";
+$text = $info->add("TEXT",array("TEXT", array( 
+			"id"=>$id2
+		)));
+$rendered2 = $text->render(array($id2=>"test_text"));
+var_dump($rendered2);
+$rendered = $info->render();
+#var_dump($rendered);
 
+$opt_key = "info_html";
+*/

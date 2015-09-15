@@ -5,7 +5,7 @@ $combo = new FloraForm_Field_Combo(array("id"=>$id));
 
 $rendered = $combo->render();
 
-$test->expect( strpos( $rendered, 'id="'.$id.'"' ), "Empty Combo has correct Id");
+$test->expect( strpos( $rendered, 'id="'.$id.'"' ), "combo - Empty Combo has correct Id");
 
 $textid = "some_text";
 
@@ -13,21 +13,21 @@ $combo->add("TEXT", array("id"=>$textid));
 
 $rendered = $combo->render();
 
-$test->expect(strpos($rendered, 'name="'.$id.'_'.$textid.'"'), "Name of subtext field is correct");
+$test->expect(strpos($rendered, 'name="'.$id.'_'.$textid.'"'), "combo - Name of subtext field is correct");
 
 $value = "cream cheese";
 $defaults = array($id=>array($textid=>$value));
 $rendered = $combo->render($defaults);
 
-$test->expect(strpos($rendered, $value), "Default value rendered into field");
+$test->expect(strpos($rendered, $value), "combo - Default value rendered into field");
 
 $_REQUEST["${id}_${textid}"] = $value;
 
 $from_form = $combo->fromForm();
 
-$test->expect(array_key_exists($id, $from_form), "Combo array key in from form");
-$test->expect(array_key_exists($textid, $from_form[$id]), "sub text field array key found in from form");
-$test->expect($from_form[$id][$textid] == $value, "correct value retrieved from form");
+$test->expect(array_key_exists($id, $from_form), "combo - Combo array key in from form");
+$test->expect(array_key_exists($textid, $from_form[$id]), "combo - sub text field array key found in from form");
+$test->expect($from_form[$id][$textid] == $value, "combo - correct value retrieved from form");
 
 ## add a second field
 
@@ -39,16 +39,16 @@ $combo->add("TEXT", array("id"=>$textid2));
 $defaults2 = array($id=>array($textid=>$value, $textid2=>$value2));
 $rendered = $combo->render($defaults2);
 
-$test->expect(strpos($rendered, 'name="'.$id.'_'.$textid2.'"'), "Name of second subtext field is correct");
-$test->expect(strpos($rendered, $value2), "Second default value rendered into field");
+$test->expect(strpos($rendered, 'name="'.$id.'_'.$textid2.'"'), "combo - Name of second subtext field is correct");
+$test->expect(strpos($rendered, $value2), "combo - Second default value rendered into field");
 
 $_REQUEST["${id}_${textid2}"] = $value2;
 
 $from_form = $combo->fromForm();
 
-$test->expect(array_key_exists($textid2, $from_form[$id]), "second sub text field array key found in from form");
-$test->expect($from_form[$id][$textid2] == $value2, "correct value for second field retrieved from form");
-$test->expect($from_form[$id][$textid] == $value, "correct value for first field still retrieved from form");
+$test->expect(array_key_exists($textid2, $from_form[$id]), "combo - second sub text field array key found in from form");
+$test->expect($from_form[$id][$textid2] == $value2, "combo - correct value for second field retrieved from form");
+$test->expect($from_form[$id][$textid] == $value, "combo - correct value for first field still retrieved from form");
 
 ## setid()
 
@@ -57,9 +57,9 @@ $combo->setId($newid);
 
 $rendered = $combo->render($defaults2);
 
-$test->expect(strpos( $rendered, 'id="'.$newid.'"'), "After setId() Combo has correct Id");
-$test->expect(strpos($rendered, 'name="'.$newid.'_'.$textid.'"'), "After setId() name of subtext field is correct");
-$test->expect(strpos($rendered, 'name="'.$newid.'_'.$textid2.'"'), "After setId() name of second subtext field is correct");
+$test->expect(strpos( $rendered, 'id="'.$newid.'"'), "combo - After setId() Combo has correct Id");
+$test->expect(strpos($rendered, 'name="'.$newid.'_'.$textid.'"'), "combo - After setId() name of subtext field is correct");
+$test->expect(strpos($rendered, 'name="'.$newid.'_'.$textid2.'"'), "combo - After setId() name of second subtext field is correct");
 
 $id2 = "triple_combo";
 $textid3 = "footle_text";
@@ -70,10 +70,10 @@ $defaults3 = array($id=>array($textid=>$value, $textid2=>$value2, $id2=>array($t
 
 $rendered = $combo->render($defaults3);
 
-$test->expect(strpos( $rendered, 'id="'.$newid.'"'), "After second combo first Combo has correct Id");
-$test->expect(strpos($rendered, 'name="'.$newid.'_'.$textid.'"'), "After second combo name of subtext field is correct");
-$test->expect(strpos($rendered, 'name="'.$newid.'_'.$textid2.'"'), "After second combo name of second subtext field is correct");
-$test->expect(strpos($rendered, 'name="'.$newid.'_'.$id2.'_'.$textid3.'"'), "After second combo name of second subtext field is correct");
+$test->expect(strpos( $rendered, 'id="'.$newid.'"'), "combo - After second combo first Combo has correct Id");
+$test->expect(strpos($rendered, 'name="'.$newid.'_'.$textid.'"'), "combo - After second combo name of subtext field is correct");
+$test->expect(strpos($rendered, 'name="'.$newid.'_'.$textid2.'"'), "combo - After second combo name of second subtext field is correct");
+$test->expect(strpos($rendered, 'name="'.$newid.'_'.$id2.'_'.$textid3.'"'), "combo - After second combo name of second subtext field is correct");
 
 $_REQUEST["${newid}_${textid}"] = $value;
 $_REQUEST["${newid}_${textid2}"] = $value2;
@@ -82,14 +82,14 @@ $_REQUEST["${newid}_${id2}_${textid3}"] = $value3;
 
 $from_form = $combo->fromForm();
 
-$test->expect(array_key_exists($textid3, $from_form[$newid][$id2]), "sub sub text field array key found in from form");
-$test->expect($from_form[$newid][$id2][$textid3] == $value3, "correct value for sub sub text field retrieved from form");
-$test->expect($from_form[$newid][$textid2] == $value2, "correct value for second field still retrieved from form");
-$test->expect($from_form[$newid][$textid] == $value, "correct value for first field still retrieved from form");
+$test->expect(array_key_exists($textid3, $from_form[$newid][$id2]), "combo - sub sub text field array key found in from form");
+$test->expect($from_form[$newid][$id2][$textid3] == $value3, "combo - correct value for sub sub text field retrieved from form");
+$test->expect($from_form[$newid][$textid2] == $value2, "combo - correct value for second field still retrieved from form");
+$test->expect($from_form[$newid][$textid] == $value, "combo - correct value for first field still retrieved from form");
 
 $newid2 = "plant_pot";
 $combo->setId($newid2);
 
 $rendered = $combo->render($defaults3);
 
-$test->expect(strpos($rendered, 'name="'.$newid2.'_'.$id2.'_'.$textid3.'"'), "After first combo setId() sub sub text field is correct");
+$test->expect(strpos($rendered, 'name="'.$newid2.'_'.$id2.'_'.$textid3.'"'), "combo - After first combo setId() sub sub text field is correct");

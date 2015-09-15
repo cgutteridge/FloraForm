@@ -12,19 +12,19 @@ Just renders text onto page, can have other variable types added into it (templa
 Single choice element (radio button or single choice dropdown)
 - "FILE"
 Button for opening file upload dialog
-- "SUBMIT"
+> "SUBMIT"
 Button for submitting form to server
 - "TIME"
 Choosable time field, no date
-"DATE"
+- "DATE"
 Choosable date field, no time
 "DATETIME"
 Choosable date and time field
-"HTML"
+- "HTML"
 Renders rich text editor into page using javascript
-"MULTICHOICE"
+> "MULTICHOICE"
 Checkboxes or multi-choice dropdown
-"SECTION"
+- "SECTION"
 Combination of fields that are rendered together
 > "COMBO"
 Allows combinations of other field

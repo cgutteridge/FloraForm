@@ -11,7 +11,7 @@ $test->expect( strpos( $rendered, 'name="'.$id.'"' ), "hidden - name is rendered
 
 $test->expect( strpos( $rendered, 'value=\''.$value.'\'' ), "hidden - default value is rendered into input");
 $test->expect( strpos( $rendered, 'type=\'hidden\''),"hidden - type is rendered into input");
-var_dump($rendered);
+
 
 
 $_POST[$id] = $value;
