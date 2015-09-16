@@ -39,18 +39,30 @@ $number->fromForm($result, $_POST);
 
 $value = 1001;
 $rendered = $number->render(array($id=>$value));
+$_POST[$id] = $value;
+$result = array();
+$number->fromForm($result, $_POST);
 
 $test->expect( array_key_exists($id, $result), "number - The id is in the result array");
 $test->expect( $result[$id] != $value, "number - the new value was ignored due to it being too big");
 
 $value = -1;
 $rendered = $number->render(array($id=>$value));
+$_POST[$id] = $value;
+$result = array();
+$number->fromForm($result, $_POST);
 
 $test->expect( array_key_exists($id, $result), "number - The id is in the result array");
 $test->expect( $result[$id] != $value, "number - the new value was ignored due to it being too small");
 
 $value = "abc";
 $rendered = $number->render(array($id=>$value));
+$_POST[$id] = $value;
+$result = array();
+$number->fromForm($result, $_POST);
+
 
 $test->expect( array_key_exists($id, $result), "number - The id is in the result array");
 $test->expect( $result[$id] != $value, "number - the new value was ignored due to it not being a number");
+
+
