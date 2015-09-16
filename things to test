@@ -18,7 +18,7 @@ Button for submitting form to server
 Choosable time field, no date
 - "DATE"
 Choosable date field, no time
-"DATETIME"
+- "DATETIME"
 Choosable date and time field
 - "HTML"
 Renders rich text editor into page using javascript

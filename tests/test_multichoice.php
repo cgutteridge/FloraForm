@@ -14,9 +14,6 @@ $test->expect(strpos($rendered,'>'.$value1.'<'),'multichoice - choice 1 rendered
 $test->expect(strpos($rendered,'>'.$value2.'<'),'multichoice - choice 2 rendered');
 $test->expect(strpos($rendered,'>'.$value3.'<'),'multichoice - choice 3 rendered');
 
-
-
-
 $_POST[$id] = $value1;
 $result = array();
 $multichoice->fromForm($result, $_POST);
@@ -35,15 +32,16 @@ $test->expect( $result1[$id] == $value1, "multichoice - From form without args v
 $id2 = "test_multichoicetwo";
 $value4 = "choice_four";
 $value5 = "choice_five";
-$multichoice2 = new FloraForm_Field_Multichoice(array('id'=>$id2,
-						"choices" =>
-						array( 
-							"1" => $value1,
-							"2" => $value2,
-							"3" => $value3,
-							"4" => $value4,
-							"5" => $value5
-						)));
+$multichoice2 = new FloraForm_Field_Multichoice(
+	array('id'=>$id2,
+	"choices" =>
+	array( 
+		"1" => $value1,
+		"2" => $value2,
+		"3" => $value3,
+		"4" => $value4,
+		"5" => $value5
+	)));
 $rendered = $multichoice2->render();
 
 

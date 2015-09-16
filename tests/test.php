@@ -9,21 +9,22 @@ require_once(__DIR__."/../FloraForm.php");
 
 $test = new Test;
 
-include("test_text.php");
-include("test_combo.php");
-include("test_list.php");
-include("test_textarea.php");
-include("test_number.php");
-include("test_hidden.php");
-include("test_info.php");
-include("test_choice.php");
-include("test_file.php");
-include("test_submit.php");
-include("test_time.php");
-include("test_html.php");
-include("test_section.php");
-include("test_multichoice.php");
+#include("test_text.php");
+#include("test_combo.php");
+#include("test_list.php");
+#include("test_textarea.php");
+#include("test_number.php");
+#include("test_hidden.php");
+#include("test_info.php");
+#include("test_choice.php");
+#include("test_file.php");
+#include("test_submit.php");
+#include("test_time.php");
+#include("test_html.php");
+#include("test_section.php");
+#include("test_multichoice.php");
 include("test_date.php");
+#include("test_datetime.php");
 
 foreach ($test->results() as $result) {
     echo $result['text'].': ';
