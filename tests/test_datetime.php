@@ -25,7 +25,6 @@ $formateddatevalue2 = "2014-09-05";
 
 $datetime2 = new FloraForm_Field_DateTime(array("id"=>$id));
 $rendered = $datetime2->render(array($id=>$timevalue2.' '.$datevalue2));
-var_dump($rendered);
 
 $test->expect(strpos($rendered,'value="'.$formateddatevalue2.'"'),'datetime - 2nd correct date is rendered');
 $test->expect(strpos($rendered,'value="'.$timevalue.'"'),'datetime - 2nd correct time is rendered');
@@ -41,8 +40,33 @@ $rendered = $datetime3->render(array($id=>$timevalue3.' '.$datevalue3));
 $test->expect(strpos($rendered,'value="'.$formattedtimevalue.'"'),'datetime - 3nd correct date is rendered');
 $test->expect(strpos($rendered,'value="'.$formatteddatevale.'"'),'datetime - 3nd correct time is rendered');
 
-/*$_POST[$id] = $datevalue.' '.$timevalue;
+$wrongdate = "henry wilkes";
+$wrongtime = "name";
+$rendered = $datetime3->render(array($id=>$wrongtime.' '.$wrongdate));
+
+$test->expect(strpos($rendered,'value=""'),'datetime - invalid date not rendered');
+$test->expect(strpos($rendered,'value=""'),'datetime - invalid time not rendered');
+
+$_POST[$id.'_date'] = $datevalue;
+$_POST[$id.'_time'] = $timevalue;
+
 $result = array();
 $datetime->fromForm($result, $_POST);
+$test->expect($result[$id] == $datevalue.' '.$timevalue,'datetime - POST returns single concatenated value');
 
-var_dump($result);*/
+
+$_REQUEST[$id.'_date'] = $datevalue;
+$_REQUEST[$id.'_time'] = $timevalue;
+$result2 = $datetime->fromForm();
+$test->expect($result2[$id] == $datevalue.' '.$timevalue,'datetime - fromForm no args returns single concatenated value');
+
+$wrongdatevalue = 'henry wilkes';
+$wrongtimevalue = 'time';
+
+$_POST[$id.'_date'] = $wrongdatevalue;
+$_POST[$id.'_time'] = $wrongtimevalue;
+
+$result = array();
+$datetime->fromForm($result, $_POST);
+$test->expect($result[$id] == null || $result[$id] == "" ,'datetime - POST returns empty string for invalud values');
+
