@@ -36,7 +36,7 @@ $_POST[$id] = $wrong_value;
 $result3 = array();
 $time->fromForm($result3, $_POST);
 $test->expect( $result3[$id] != $wrong_value, "time - invalid value is not returned by POST");
-var_dump($result3);
+
 
 $wrong_value2 = "still haven't the time";
 $_REQUEST[$id] = $wrong_value2;

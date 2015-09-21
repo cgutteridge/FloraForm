@@ -29,11 +29,16 @@ $test->expect( strpos($rendered, '<div id="test_info_description"'),"info - desc
 
 $test->expect( strpos($rendered,$content_value),"info - html content rendered");
 
+$info2 = new FloraForm_Info(array("id"=>$id));
+$rendered = $info2->render();
+
+$test->expect( strpos($rendered,'></span>'),"info - Empty span rendered when no html content provided");
+
 $id2 = "test_text";
 $text_value = "text stuff\r\ntext stuff\r\ntext stuff\r\ntext stuff\r\n";
 $info->add("TEXT", array( "id"=>$id2));
-#$rendered = $info->render();
-#var_dump($rendered);
+$rendered = $info->render(array($id=>array($id2=>$text_value)));
+var_dump($rendered);
 
 #$opt_key = "info_html";
 

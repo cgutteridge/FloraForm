@@ -17,8 +17,8 @@ $test->expect( strpos( $rendered, '<label ' ), "file - field title label tag is 
 $test->expect( strpos( $rendered, '</label>:' ), "file - colon rendered");
 
 var_dump($_FILES);
-#$target_dir = "/";
-#$target_file = basename($_FILES[$id]["name"]);
+$target_dir = "/";
+$target_file = basename($_FILES[$id]["name"]);
 
 #$fileresult = $file->fromForm();
 

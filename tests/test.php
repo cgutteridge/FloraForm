@@ -20,11 +20,12 @@ $test = new Test;
 #include("test_file.php");
 #include("test_submit.php");
 #include("test_time.php");
-#include("test_html.php");
+include("test_html.php");
 #include("test_section.php");
 #include("test_multichoice.php");
-include("test_date.php");
+#include("test_date.php");
 #include("test_datetime.php");
+#include("test_conditional.php");
 
 foreach ($test->results() as $result) {
     echo $result['text'].': ';
