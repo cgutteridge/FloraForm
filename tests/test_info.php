@@ -37,7 +37,7 @@ $test->expect( strpos($rendered,'></span>'),"info - Empty span rendered when no 
 $id2 = "test_text";
 $text_value = "text stuff\r\ntext stuff\r\ntext stuff\r\ntext stuff\r\n";
 $info->add("TEXT", array( "id"=>$id2));
-$rendered = $info->render(array($id=>array($id2=>$text_value)));
+$rendered = $info->render();
 var_dump($rendered);
 
 #$opt_key = "info_html";

@@ -7,7 +7,6 @@ $section = new FloraForm_Section(array("id"=>$id,"title"=>$title,"description_ht
 
 $rendered = $section->render();
 
-
 $test->expect( strpos($rendered,'<div'),"section - section tag rendered");
 $test->expect( strpos($rendered,'id="'.$id.'_container"'),"section - html content rendered");
 $test->expect( strpos($rendered,$desc),'section - description rendered');
@@ -42,4 +41,34 @@ $section->add("INFO",array("id"=>$id3,$opt_key=>$value3,$title_key=>$title_value
 $rendered = $section->render();
 $test->expect( strpos($rendered,$content_value),'section - info value rendered into section');
 $test->expect( strpos($rendered,$desc_value ),'section - info description rendered into section');
+
+#$text = new FloraForm_Field_Text(array("id"=>"text_id","value"=>"test"));
+#$number = new FloraForm_Field_Number(array("id"=>"number_id","value"=>"123"));
+#$fields = array($text,$number);
+#$fields = array($text);
+
+$textid = 'test_text'; $textvalue="test_text";
+$numberid = 'test_number'; $numbervalue="123";
+
+$section_two = new FloraForm_Section(array("id"=>$id,"title"=>$title,"description_html"=>$desc,"fields"=>array(
+	array("type"=>"TEXT",'id'=>'test_text'),
+	array("type"=>'NUMBER','id'=>'test_number'))));
+$rendered = $section_two->render(array($textid=>$textvalue,$numberid=>$numbervalue));
+
+$test->expect(strpos($rendered,'id="'.$id.'_'.$textid.'"'),'section - text field id rendered');
+$test->expect(strpos($rendered,'id="'.$id.'_'.$numberid.'"'),'section - number field id rendered');
+
+#$_POST[$id] = array($textvalue,$numbervalue);
+#$_POST[$id][$textid] = $textvalue;
+#$_POST[$id][$numberid] = $numbervalue;
+
+#$result = array();
+#$number->fromForm($result, $_POST);
+
+#$result = $section_two->fromForm();
+var_dump($section_two);
+
+#$test->expect( array_key_exists($id, $result), "section - The id is in the result array");
+#$test->expect( $result[$id] != $value, "section - the new value was ignored due to it not being a number");
+
 
