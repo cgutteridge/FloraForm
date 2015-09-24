@@ -57,14 +57,13 @@ five';
 $_POST[$id2] = $content_value3;
 $result = array();
 $htmlarea->fromForm($result, $_POST);
-var_dump($result);
+
 $test->expect( array_key_exists($id2, $result), "html - The id is in the result array");
 $test->expect( $result[$id2] != $content_value3, "html - invalid value is not returned");
 
 $cols = 5;
 $htmlarea = new FloraForm_Field_HTML(array("id"=>$id2,"cols"=>$cols,"rows"=>$rows));
 $rendered = $htmlarea->render();
-
 
 $content_value4 = '1234567';
 $_REQUEST[$id2] = $content_value2;

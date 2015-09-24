@@ -58,7 +58,7 @@ $values = array($textvalue,$numbervalue);
 $_POST[$id] = $values;
 $result = array();
 $section_two->fromForm($result, $_POST);
-var_dump($result);
+
 
 $test->expect(isset($result[$id]) && $result[$id] == $values,'section - values returned by _POST');
 

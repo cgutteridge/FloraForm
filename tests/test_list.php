@@ -16,7 +16,7 @@ $test->expect( strpos( $rendered, 'name="'.$id.'_1_'.$text_id.'"' ), "list - Lis
 
 $min_items = $list->option("min-items");
 
-$test->expect( $min_items==3, "The minimum number of items is 3");
+$test->expect( $min_items==3, "list - The minimum number of items is 3");
 $test->expect( strpos( $rendered, 'name="'.$id.'_3_'.$text_id.'"' ), "list - There are 3 fields rendered");
 $test->expect( !strpos( $rendered, 'name="'.$id.'_4_'.$text_id.'"' ), "list - There are not 4 fields rendered");
 

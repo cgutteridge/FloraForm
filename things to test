@@ -23,7 +23,7 @@ Choosable time field, no date
 Choosable date field, no time
 > "DATETIME"
 Choosable date and time field
-- "HTML" #not quite sure how to test this
+> "HTML" #not quite sure how to test this
 Renders rich text editor into page using javascript
 > "MULTICHOICE"
 Checkboxes or multi-choice dropdown
