@@ -26,4 +26,50 @@ $rendered = $htmlarea->render(array($id=>$content_value));
 $test->expect(strpos($rendered,$content_text),"html - html content text rendered");
 $test->expect(strpos($rendered,$content_title),"html - html content title rendered");
 
+$id2 = "test_html2";
+$cols = 20;
+$rows = 3;
+
+$content_key = "content_html";
+$content_value2 = 'one\r\ntwo\r\nthree'; 
+$htmlarea = new FloraForm_Field_HTML(array("id"=>$id2,"cols"=>$cols,"rows"=>$rows));
+$rendered = $htmlarea->render();
+
+$_POST[$id2] = $content_value2;
+$result = array();
+$htmlarea->fromForm($result, $_POST);
+
+
+$test->expect( array_key_exists($id2, $result), "html - The id is in the result array");
+$test->expect( $result[$id2] == $content_value2, "html - the selected value was correctly found");
+
+$_REQUEST[$id2] = $content_value2;
+$result2 = $htmlarea->fromForm();
+
+$test->expect( array_key_exists($id2, $result2), "html - From form without args - id in the result array");
+$test->expect( $result2[$id2] == $content_value2, "html - From form without args value was correctly found");
+
+$content_value3 = 'one
+two
+three
+four
+five';
+$_POST[$id2] = $content_value3;
+$result = array();
+$htmlarea->fromForm($result, $_POST);
+var_dump($result);
+$test->expect( array_key_exists($id2, $result), "html - The id is in the result array");
+$test->expect( $result[$id2] != $content_value3, "html - invalid value is not returned");
+
+$cols = 5;
+$htmlarea = new FloraForm_Field_HTML(array("id"=>$id2,"cols"=>$cols,"rows"=>$rows));
+$rendered = $htmlarea->render();
+
+
+$content_value4 = '1234567';
+$_REQUEST[$id2] = $content_value2;
+$result2 = $htmlarea->fromForm();
+
+$test->expect( array_key_exists($id2, $result2), "html - From form without args - id in the result array");
+$test->expect( $result2[$id2] == $content_value4, "html - From form without args invalid value was not returned");
 
