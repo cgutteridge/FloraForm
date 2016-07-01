@@ -584,11 +584,10 @@ class FloraForm_Field_File extends FloraForm_Field
 		global $_FILES;
 			
 		if( $this->id == "" ) { return; }
+		if(!array_key_exists($this->fullID(), $_FILES)){ return; }
 		if ($_FILES[$this->fullId()]["error"] > 0){ return; }
 
-		if(array_key_exists($this->fullID(), $_FILES)){
-			$values[$this->id] = $_FILES[$this->fullID()];
-		}
+		$values[$this->id] = $_FILES[$this->fullID()];
 		
 		return $values;
 	}
